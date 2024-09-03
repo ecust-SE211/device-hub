@@ -1,3 +1,5 @@
+import LoadingPage from "@/components/LoadingPage";
+
 export default function Login() {
-  return <div>login page</div>;
+  return <LoadingPage message="加载中" />;
 }
