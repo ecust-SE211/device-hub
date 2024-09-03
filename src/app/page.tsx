@@ -1,33 +1,32 @@
 "use client";
-import { Button, Card } from "antd";
-import Link from "next/link";
+import { Card, Button } from "antd";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { ReactNode } from "react";
-import Title from "@/components/Title";
+import { Title, FlexCenter } from "@/components";
 export default function HomePage(): ReactNode {
   const router = useRouter();
   return (
-    <div className="w-full h-screen flex flex-col items-center justify-center">
-      <Card title={<Title size={1.5} style={{ minWidth: "300px" }} />}>
-        <div className="flex flex-col items-center gap-2">
+    <FlexCenter>
+      <Card title={<Title size={1.5} className="w-full" useFavicon />}>
+        <div className="flex flex-col items-center gap-4 px-4">
           <Button
+            className="self-stretch"
             size="large"
-            type="primary"
-            onClick={() => router.push("/login")}
+            onClick={() => router.push("/login/manager")}
           >
-            学生登陆
+            Login As Manager
           </Button>
           <Button
+            className="self-stretch"
             size="large"
-            type="primary"
-            onClick={() => router.push("/login/admin")}
+            onClick={() => router.push("/login/leader")}
           >
-            教师登陆
+            Login As Leader
           </Button>
-          <Link href="/login"></Link>
-          <Link href="/login/admin"></Link>
+          <Link href="/loadingPage">Here is a loadingPage.</Link>
         </div>
       </Card>
-    </div>
+    </FlexCenter>
   );
 }

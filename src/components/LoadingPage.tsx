@@ -1,6 +1,6 @@
 "use client";
 import { ReactNode, useEffect, useRef } from "react";
-import "./animate.css";
+import "./css/animate.css";
 
 type Props = {
   /** 方块的旋转周期 ms*/
@@ -11,7 +11,7 @@ type Props = {
   message?: string;
 };
 
-export default function LoadingPage(props: Props): ReactNode {
+export function LoadingPage(props: Props): ReactNode {
   const { rotateSpeed = 1000, duration = 400, message = "Loading" } = props;
   const loadingSpan = useRef<HTMLSpanElement>(null);
   let dots = "....";
@@ -36,6 +36,8 @@ export default function LoadingPage(props: Props): ReactNode {
   };
   useEffect(() => {
     /** 载入点点点动画 */
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     currentTimeOut = setTimeout(handleGetNextDots, 0);
 
     return () => {
@@ -53,7 +55,7 @@ export default function LoadingPage(props: Props): ReactNode {
       />
       <span
         ref={loadingSpan}
-        className="text-teal-500 font-bold text-base mt-1"
+        className="text-teal-400 font-bold text-base mt-1"
       >
         .
       </span>

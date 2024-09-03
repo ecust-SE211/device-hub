@@ -2,6 +2,8 @@ import React from "react";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 
 import "./globals.css";
+import { tealPrimary } from "./color";
+import { ConfigProvider } from "antd";
 function RootLayout({ children }: React.PropsWithChildren) {
   return (
     <html lang="zh">
@@ -20,7 +22,17 @@ function RootLayout({ children }: React.PropsWithChildren) {
             style={{ right: "-5%", top: "0%", width: "30%", height: "30%" }}
           ></div>
         </div>
-        <AntdRegistry>{children}</AntdRegistry>
+        <ConfigProvider
+          theme={{
+            token: {
+              colorInfo: tealPrimary,
+              colorLink: tealPrimary,
+              colorPrimary: tealPrimary,
+            },
+          }}
+        >
+          <AntdRegistry>{children}</AntdRegistry>
+        </ConfigProvider>
       </body>
     </html>
   );
