@@ -36,8 +36,13 @@ export function Title(props: Props): ReactNode {
   const router = useRouter();
   return (
     <div
-      className={`flex items-center justify-center gap-2 cursor-pointer transition-colors ${className}`}
-      style={style}
+      className={`flex items-center justify-center gap-2 transition-colors ${className}`}
+      style={{
+        ...{
+          cursor: onClick ? "pointer" : "default",
+        },
+        ...style,
+      }}
       onClick={onClick}
     >
       {returnButton && (
