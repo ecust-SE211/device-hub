@@ -1,36 +1,24 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
-
-## Getting Started
-
-First, run the development server:
-
+# device-hub
+> FE for DeviceHub
+## 说明
+设备管理系统(DeviceHub)的前端模块
+### 架构
+|Name|Version|Description|
+|---|---|---|
+|next|14.2.7|页面框架|
+|react|^18|界面库|
+|antd|^5|UI组件库|
+|lodash|^4.17.21|工具库|
+## 运行
+### 使用npm
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+### 页面说明
+|Name|Route|Description|
+|---|---|---|
+|首页(MainPage)|/|根页面，用户可以选择登录方式|
+|管理员登录页面|/login/manager|完成登录跳转到dashboard|
+|领导登录页面|/login/leader|完成登录跳转到dashboard|
+|管理页面首页|/dashboard|显示用户的信息; 本页面及子页面有统一的侧边栏和Layout|

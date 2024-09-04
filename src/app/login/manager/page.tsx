@@ -5,7 +5,7 @@ import { Button, Card, Form, Input } from "antd";
 import FormItem from "antd/es/form/FormItem";
 
 export default function ManagerLogin() {
-  const submit = (values: any) => {
+  const handelSubmit = (values: any) => {
     console.log("Received values of form: ", values);
   };
   return (
@@ -25,7 +25,7 @@ export default function ManagerLogin() {
           name="login"
           initialValues={{ remember: true }}
           style={{ maxWidth: 360 }}
-          onFinish={submit}
+          onFinish={handelSubmit}
         >
           <FormItem
             name="username"

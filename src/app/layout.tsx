@@ -7,6 +7,9 @@ import { ConfigProvider } from "antd";
 function RootLayout({ children }: React.PropsWithChildren) {
   return (
     <html lang="zh">
+      <head>
+        <title>DeviceHub</title>
+      </head>
       <body className="w-full overflow-x-hidden">
         <div className="fixed w-full h-full overflow-hidden -z-10">
           <div
@@ -28,6 +31,14 @@ function RootLayout({ children }: React.PropsWithChildren) {
               colorInfo: tealPrimary,
               colorLink: tealPrimary,
               colorPrimary: tealPrimary,
+            },
+            components: {
+              Card: {
+                borderRadiusLG: 12,
+              },
+              Form: {
+                itemMarginBottom: 12,
+              },
             },
           }}
         >
