@@ -1,12 +1,30 @@
 "use client";
 import { FlexCenter, Title } from "@/components";
+import { managerLogin } from "@/service";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
-import { Button, Card, Form, Input } from "antd";
+import { Button, Card, Form, Input, message } from "antd";
 import FormItem from "antd/es/form/FormItem";
+import { useRouter } from "next/navigation";
 
 export default function ManagerLogin() {
-  const handelSubmit = (values: any) => {
-    console.log("Received values of form: ", values);
+  const router = useRouter();
+  const [messageApi, contextHolder] = message.useMessage();
+  var submitting = false;
+  const submit = (values: any) => {
+    if (submitting) return;
+    submitting = true;
+    managerLogin(values)
+      .then((res) => {
+        const { code, msg } = res;
+        if (code !== 200) {
+          messageApi.error(`Code :${code}\n${msg}`);
+        }
+        // localStorage.setItem()
+        router.push("/dashboard");
+      })
+      .catch((err) => {
+        messageApi.error(err);
+      });
   };
   return (
     <FlexCenter>
@@ -17,15 +35,15 @@ export default function ManagerLogin() {
             style={{ minWidth: "300px" }}
             title="Login As Manager"
             returnButton
-            useFavicon
           />
         }
       >
+        {contextHolder}
         <Form
           name="login"
           initialValues={{ remember: true }}
           style={{ maxWidth: 360 }}
-          onFinish={handelSubmit}
+          onFinish={submit}
         >
           <FormItem
             name="username"

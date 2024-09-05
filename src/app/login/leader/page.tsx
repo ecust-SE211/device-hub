@@ -1,28 +1,38 @@
 "use client";
-import { FlexCenter, Title } from "@/components";
+import { FlexCenter, LoadingPage, Title } from "@/components";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
-import { Button, Card, Form, Input } from "antd";
+import { Button, Card, Form, Input, message, notification } from "antd";
 import FormItem from "antd/es/form/FormItem";
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import { leaderLogin } from "@/service";
 import { useRouter } from "next/navigation";
 export default function LeaderLogin(): ReactNode {
   const router = useRouter();
+  const [messageApi, contextHolder] = message.useMessage();
+
+  const [submitting, setSubmitting] = useState(false);
   const submit = (values: any) => {
+    if (submitting) return;
+    setSubmitting(true);
     leaderLogin(values)
       .then((res) => {
         const { code, msg } = res;
         console.log(res);
         if (code !== 200) {
-          // TODO
+          messageApi.error(`Code :${code}\n${msg}`);
         }
         // localStorage.setItem()
         router.push("/dashboard");
+        setSubmitting(false);
       })
-      .catch((err) => {});
+      .catch((err) => {
+        messageApi.error(`${err}`);
+        setSubmitting(false);
+      });
   };
   return (
     <FlexCenter>
+      {submitting && <LoadingPage cover />}
       <Card
         title={
           <Title
@@ -30,10 +40,10 @@ export default function LeaderLogin(): ReactNode {
             style={{ minWidth: "300px" }}
             title="Login As Leader"
             returnButton
-            useFavicon
           />
         }
       >
+        {contextHolder}
         <Form
           name="login"
           initialValues={{ remember: true }}
