@@ -12,6 +12,8 @@ function DashBoardLayout({ children }: React.PropsWithChildren) {
   if (!isLogin()) {
     alert("You must login first.");
     router.push("/");
+    return <LoadingPage />;
+    // There will be a redirecting Page.
   }
 
   const handleScrollEnd = debounce(() => {
