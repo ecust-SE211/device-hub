@@ -4,7 +4,6 @@ import { useRouter } from "next/navigation";
 import { ReactNode } from "react";
 import { Title } from "@/components";
 export default function HomePage(): ReactNode {
-  const router = useRouter();
   return (
     <Card
       style={{ height: "60rem" }}

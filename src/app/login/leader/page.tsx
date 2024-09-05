@@ -4,10 +4,22 @@ import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Card, Form, Input } from "antd";
 import FormItem from "antd/es/form/FormItem";
 import { ReactNode } from "react";
-
+import { leaderLogin } from "@/service";
+import { useRouter } from "next/navigation";
 export default function LeaderLogin(): ReactNode {
+  const router = useRouter();
   const submit = (values: any) => {
-    console.log("Received values of form: ", values);
+    leaderLogin(values)
+      .then((res) => {
+        const { code, msg } = res;
+        console.log(res);
+        if (code !== 200) {
+          // TODO
+        }
+        // localStorage.setItem()
+        router.push("/dashboard");
+      })
+      .catch((err) => {});
   };
   return (
     <FlexCenter>
