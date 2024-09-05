@@ -1,33 +1,38 @@
 "use client";
-import { FlexCenter, Title } from "@/components";
-import { managerLogin } from "@/service";
+import { FlexCenter, LoadingPage, Title } from "@/components";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
-import { Button, Card, Form, Input, message } from "antd";
+import { Button, Card, Form, Input, message, notification } from "antd";
 import FormItem from "antd/es/form/FormItem";
+import { ReactNode, useState } from "react";
+import { managerLogin } from "@/service";
 import { useRouter } from "next/navigation";
-
-export default function ManagerLogin() {
+export default function ManagerLogin(): ReactNode {
   const router = useRouter();
   const [messageApi, contextHolder] = message.useMessage();
-  var submitting = false;
+
+  const [submitting, setSubmitting] = useState(false);
   const submit = (values: any) => {
     if (submitting) return;
-    submitting = true;
+    setSubmitting(true);
     managerLogin(values)
       .then((res) => {
         const { code, msg } = res;
+        console.log(res);
         if (code !== 200) {
           messageApi.error(`Code :${code}\n${msg}`);
         }
         // localStorage.setItem()
         router.push("/dashboard");
+        setSubmitting(false);
       })
       .catch((err) => {
-        messageApi.error(err);
+        messageApi.error(`${err}`);
+        setSubmitting(false);
       });
   };
   return (
     <FlexCenter>
+      {submitting && <LoadingPage cover />}
       <Card
         title={
           <Title
