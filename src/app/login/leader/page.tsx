@@ -1,7 +1,7 @@
 "use client";
 import { FlexCenter, LoadingPage, Title } from "@/components";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
-import { Button, Card, Form, Input, message, notification } from "antd";
+import { Button, Card, Form, Input, message } from "antd";
 import FormItem from "antd/es/form/FormItem";
 import { ReactNode, useState } from "react";
 import { leaderLogin } from "@/service";
@@ -9,8 +9,8 @@ import { useRouter } from "next/navigation";
 export default function LeaderLogin(): ReactNode {
   const router = useRouter();
   const [messageApi, contextHolder] = message.useMessage();
-
   const [submitting, setSubmitting] = useState(false);
+
   const submit = (values: any) => {
     if (submitting) return;
     setSubmitting(true);
@@ -21,7 +21,14 @@ export default function LeaderLogin(): ReactNode {
         if (code !== 200) {
           messageApi.error(`Code :${code}\n${msg}`);
         }
-        // localStorage.setItem()
+        const { id, name, tel, email, token } = res.data!;
+        localStorage.setItem("id", id);
+        localStorage.setItem("name", name);
+        localStorage.setItem("tel", tel);
+        localStorage.setItem("email", email);
+        localStorage.setItem("token", token);
+        localStorage.setItem("userType", "L");
+
         router.push("/dashboard");
         setSubmitting(false);
       })

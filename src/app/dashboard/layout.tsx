@@ -5,7 +5,15 @@ import React, { Suspense, useEffect, useState } from "react";
 import { debounce } from "lodash";
 import NavBar from "./components/NavBar";
 import UserInfoCard from "./components/UserInfoCard";
+import { isLogin } from "@/utils";
+import { useRouter } from "next/navigation";
 function DashBoardLayout({ children }: React.PropsWithChildren) {
+  const router = useRouter();
+  if (!isLogin()) {
+    alert("You must login first.");
+    router.push("/");
+  }
+
   const handleScrollEnd = debounce(() => {
     const scrollAnchor =
       document.documentElement.offsetHeight -

@@ -1,8 +1,5 @@
 "use client";
 import { Title } from "@/components";
-import { Affix, Card, Form, Input, Layout } from "antd";
-import { Content, Footer, Header } from "antd/es/layout/layout";
-import Sider from "antd/es/layout/Sider";
 import { throttle } from "lodash";
 import { usePathname, useRouter } from "next/navigation";
 import React, { ReactNode, useEffect, useState } from "react";

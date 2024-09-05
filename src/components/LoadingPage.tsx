@@ -54,8 +54,8 @@ export function LoadingPage(props: Props): ReactNode {
   });
   return (
     <div
-      className={`w-full h-full flex flex-col items-center justify-center ${
-        cover ? "fixed top-0 left-0 z-[100] backdrop-blur-sm" : null
+      className={`z-[100] -top-2 -left-2 -bottom-2 -right-2 flex flex-col items-center justify-center  backdrop-blur-sm ${
+        cover ? "fixed" : "absolute"
       }`}
     >
       <div

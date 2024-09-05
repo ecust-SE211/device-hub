@@ -1,36 +1,26 @@
 import { post, commonResponse } from "@/libs";
 
-export type leaderLoginRequest = {
-  id: "string";
-  pwd: "string";
-};
-export type leaderLoginResponse = {
-  id: "string";
-  name: "string";
-  pwd: "string";
-  tel: "string";
-  email: "string";
-};
-export type managerLoginRequest = {
-  id: "string";
-  pwd: "string";
-};
-export type managerLoginResponse = {
-  id: "string";
-  name: "string";
-  pwd: "string";
-  tel: "string";
-  email: "string";
-};
+export interface loginRequest extends Record<string, string> {
+  id: string;
+  pwd: string;
+}
+export interface loginResponse extends Record<string, string> {
+  id: string;
+  name: string;
+  pwd: string;
+  tel: string;
+  email: string;
+  token: string;
+}
 
 export function leaderLogin(
-  data: leaderLoginRequest
-): Promise<commonResponse<leaderLoginRequest>> {
+  data: loginRequest
+): Promise<commonResponse<loginResponse>> {
   return post("/login/leader", data);
 }
 
 export function managerLogin(
-  data: managerLoginRequest
-): Promise<commonResponse<managerLoginRequest>> {
+  data: loginRequest
+): Promise<commonResponse<loginResponse>> {
   return post("/login/manager", data);
 }
