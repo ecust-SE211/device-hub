@@ -3,6 +3,8 @@ import { ReactNode, useEffect, useRef } from "react";
 import "./css/animate.css";
 
 type Props = {
+  /** 页面蒙层 */
+  cover?: boolean;
   /** 方块的旋转周期 ms*/
   rotateSpeed?: number;
   /** "..."的更新周期 ms*/
@@ -12,7 +14,12 @@ type Props = {
 };
 
 export function LoadingPage(props: Props): ReactNode {
-  const { rotateSpeed = 1000, duration = 400, message = "Loading" } = props;
+  const {
+    cover,
+    rotateSpeed = 1000,
+    duration = 400,
+    message = "Loading",
+  } = props;
   const loadingSpan = useRef<HTMLSpanElement>(null);
   let dots = "....";
   let currentTimeOut: NodeJS.Timeout = null!;
@@ -46,7 +53,11 @@ export function LoadingPage(props: Props): ReactNode {
     };
   });
   return (
-    <div className="w-full h-screen flex flex-col items-center justify-center">
+    <div
+      className={`z-[100] -top-2 -left-2 -bottom-2 -right-2 flex flex-col items-center justify-center  backdrop-blur-sm ${
+        cover ? "fixed" : "absolute"
+      }`}
+    >
       <div
         className="size-14 rounded-xl bg-white border-teal-200 border-2 border-solid"
         style={{

@@ -24,7 +24,6 @@ export default function HomePage(): ReactNode {
           >
             Login As Leader
           </Button>
-          <Link href="/loadingPage">Here is a loadingPage.</Link>
         </div>
       </Card>
     </FlexCenter>

@@ -12,6 +12,7 @@
     "@ant-design/icons": "^5.4.0",
     "@ant-design/nextjs-registry": "^1.0.1",
     "antd": "^5.20.4",
+    "axios": "^1.7.7",
     "lodash": "^4.17.21",
     "next": "14.2.7",
     "react": "^18",

@@ -1,15 +1,45 @@
 "use client";
-import { FlexCenter, Title } from "@/components";
+import { FlexCenter, LoadingPage, Title } from "@/components";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
-import { Button, Card, Form, Input } from "antd";
+import { Button, Card, Form, Input, message } from "antd";
 import FormItem from "antd/es/form/FormItem";
+import { ReactNode, useState } from "react";
+import { managerLogin } from "@/service";
+import { useRouter } from "next/navigation";
+export default function ManagerLogin(): ReactNode {
+  const router = useRouter();
+  const [messageApi, contextHolder] = message.useMessage();
 
-export default function ManagerLogin() {
-  const handelSubmit = (values: any) => {
-    console.log("Received values of form: ", values);
+  const [submitting, setSubmitting] = useState(false);
+  const submit = (values: any) => {
+    if (submitting) return;
+    setSubmitting(true);
+    managerLogin(values)
+      .then((res) => {
+        const { code, msg } = res;
+        console.log(res);
+        if (code !== 200) {
+          messageApi.error(`Code :${code}\n${msg}`);
+        }
+        const { id, name, tel, email, token } = res.data!;
+        localStorage.setItem("id", id);
+        localStorage.setItem("name", name);
+        localStorage.setItem("tel", tel);
+        localStorage.setItem("email", email);
+        localStorage.setItem("token", token);
+        localStorage.setItem("userType", "M");
+
+        router.push("/dashboard");
+        setSubmitting(false);
+      })
+      .catch((err) => {
+        messageApi.error(`${err}`);
+        setSubmitting(false);
+      });
   };
   return (
     <FlexCenter>
+      {submitting && <LoadingPage cover />}
       <Card
         title={
           <Title
@@ -17,15 +47,15 @@ export default function ManagerLogin() {
             style={{ minWidth: "300px" }}
             title="Login As Manager"
             returnButton
-            useFavicon
           />
         }
       >
+        {contextHolder}
         <Form
           name="login"
           initialValues={{ remember: true }}
           style={{ maxWidth: 360 }}
-          onFinish={handelSubmit}
+          onFinish={submit}
         >
           <FormItem
             name="username"
