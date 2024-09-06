@@ -58,13 +58,13 @@ export default function LeaderLogin(): ReactNode {
           onFinish={submit}
         >
           <FormItem
-            name="username"
-            rules={[{ required: true, message: "Please input your Username!" }]}
+            name="id"
+            rules={[{ required: true, message: "Please input current id!" }]}
           >
-            <Input prefix={<UserOutlined />} placeholder="Username" />
+            <Input prefix={<UserOutlined />} placeholder="Id" />
           </FormItem>
           <FormItem
-            name="password"
+            name="pwd"
             rules={[{ required: true, message: "Please input your Password!" }]}
           >
             <Input
