@@ -1,8 +1,7 @@
 import { commonResponse } from "./type";
 import axios, { AxiosRequestConfig } from "axios";
-import config from "@/config.json";
 const customAxios = axios.create({
-  baseURL: config.backendURL || "http://localhost:8088",
+  baseURL: "http://localhost:8088",
 });
 customAxios.defaults.headers["Content-Type"] = "application/json";
 
