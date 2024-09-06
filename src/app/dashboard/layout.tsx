@@ -9,11 +9,6 @@ import { isLogin } from "@/utils";
 import { useRouter } from "next/navigation";
 function DashBoardLayout({ children }: React.PropsWithChildren) {
   const router = useRouter();
-  if (!isLogin()) {
-    alert("You must login first.");
-    router.push("/");
-  }
-
   const handleScrollEnd = debounce(() => {
     const scrollAnchor =
       document.documentElement.offsetHeight -
@@ -32,6 +27,14 @@ function DashBoardLayout({ children }: React.PropsWithChildren) {
       window.removeEventListener("scrollend", handleScrollEnd);
     };
   });
+
+  if (!isLogin()) {
+    alert("You must login first.");
+    router.push("/");
+    // There will be a redirecting Page.
+    return <LoadingPage />;
+  }
+
   return (
     <>
       <NavBar />
