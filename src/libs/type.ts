@@ -3,3 +3,11 @@ export interface commonResponse<T> {
   msg: string;
   data?: T;
 }
+
+export interface idRequest extends Record<string, string> {
+  id: string;
+}
+
+export interface statusRequest extends Record<string, number> {
+  status: number;
+}
