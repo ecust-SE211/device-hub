@@ -2,7 +2,7 @@
 import { LoadingPage } from "@/components";
 import { Affix } from "antd";
 import React, { Suspense, useEffect, useState } from "react";
-import { debounce } from "lodash";
+import { debounce, throttle } from "lodash";
 import NavBar from "./components/NavBar";
 import UserInfoCard from "./components/UserInfoCard";
 import { isLogin } from "@/utils";
@@ -23,8 +23,8 @@ function DashBoardLayout({ children }: React.PropsWithChildren) {
       });
     }
   }, 200);
-  const handleResize = debounce(() => {
-    const isShrinking = window.innerWidth < 1000;
+  const handleResize = throttle(() => {
+    const isShrinking = window.innerWidth < 1188;
     if (isShrinking == hiddenUserInfo) {
       setHiddenUserInfo(!isShrinking);
     }
@@ -56,12 +56,12 @@ function DashBoardLayout({ children }: React.PropsWithChildren) {
         className="w-full min-h-screen flex flex-col items-center overflow-x-hidden px-12 pt-14"
         style={{ minWidth: "50rem" }}
       >
-        <main className="self-stretch flex justify-center gap-8 py-4">
-          <article style={{ flexGrow: "4" }}>
+        <main className="self-stretch flex justify-center gap-4 py-4">
+          <article className="flex-1">
             <Suspense fallback={<LoadingPage />}>{children}</Suspense>
           </article>
           {hiddenUserInfo && (
-            <aside style={{ maxWidth: "16rem", flexGrow: "1" }}>
+            <aside style={{ width: "16rem" }}>
               <Affix offsetTop={20} style={{ zIndex: 10 }}>
                 <UserInfoCard />
               </Affix>
