@@ -68,7 +68,7 @@ export function LoadingPage(props: Props): ReactNode {
         ref={loadingSpan}
         className="text-teal-400 font-bold text-base mt-1"
       >
-        .
+        {" "}
       </span>
     </div>
   );
