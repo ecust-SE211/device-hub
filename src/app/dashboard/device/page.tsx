@@ -30,42 +30,24 @@ export default function HomePage(): ReactNode {
     //   ))}
     // </div>
     <div className="flex w-full items-start gap-4">
-      {/* <List
-        className="bg-white"
-        style={{
-          borderColor: "#2dd4bf",
-          borderWidth: "0rem",
-        }}
-        header={<div className=" bg-teal-200">Device Category</div>}
-        bordered
-        dataSource={categoryInfo}
-        renderItem={(item) => (
-          <List.Item
-            className={`${category == item.id && "border-teal-400"}`}
-            style={
-              category == item.id
-                ? {
-                    // borderColor: "#2dd4bf",
-                    // borderTopWidth: "0.125rem",
-                    // borderBottomWidth: "0.125rem",
-                    backgroundColor: "#99f6e4",
-                  }
-                : {
-                    borderTop: "0",
-                    borderBottom: "0",
-                  }
-            }
-          >
-            {item.name}
-          </List.Item>
-        )}
-      /> */}
       <div className="flex flex-col bg-white rounded-xl overflow-hidden">
-        <div className="px-4 py-2 bg-teal-200 text-white text-lg font-semibold">
+        <div className="px-4 py-2 bg-teal-200 text-white text-lg font-semibold border-b-2 border-white">
           Device Category
         </div>
         {categoryInfo.map((item, index) => (
-          <div key={index} className="px-4 py-2">
+          <div
+            key={index}
+            className={`px-4 py-2 text-teal-600 zh transition-colors ${
+              item.id == category ? "bg-teal-400 text-white" : ""
+            }`}
+            onClick={
+              item.id == category
+                ? undefined
+                : () => {
+                    setCategory(item.id);
+                  }
+            }
+          >
             {item.name}
           </div>
         ))}

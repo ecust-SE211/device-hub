@@ -1,6 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@font-face {
+
+  font-family: 'YeZi';
+  src: url('/YeZiGongChangTangYingHei-2.ttf');
+}
 
 :root {
   --foreground-rgb: 0, 0, 0;
@@ -15,7 +20,9 @@
     --background-end-rgb: 0, 0, 0;
   }
 }
-
+.zh{
+  font-family: 'YeZi';
+}
 body {
   background-color: #f0fdfa;
 }
