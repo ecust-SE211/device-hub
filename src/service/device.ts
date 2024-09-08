@@ -56,3 +56,9 @@ export async function appendDevice(
 ): Promise<commonResponse<undefined>> {
   return post("/device/appendDevice", data);
 }
+
+export async function updateDevice(
+  data: DeviceInfo
+): Promise<commonResponse<DeviceInfo>> {
+  return post("/device/updateDevice", data);
+}

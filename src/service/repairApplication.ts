@@ -1,5 +1,5 @@
 import { post, commonResponse } from "@/libs";
-import { idRequest, statusRequest } from "@/libs/type";
+import { idRequest, statusRequest, rejectRequest } from "@/libs/type";
 
 export interface RepairApplicationInfo extends Record<string, any> {
   id: string;
@@ -15,21 +15,32 @@ export interface RepairApplicationInfo extends Record<string, any> {
   note?: string;
 }
 
-export interface DeviceRequest extends Record<string, string> {
-  id: string;
-}
-
-export type DeviceRequestList = Array<DeviceRequest>;
+export type DeviceList = Array<idRequest>;
 
 export interface RepairApplicationRequest {
   mid: string;
   brief: string;
   manufacturer: string;
   cost: number;
-  Devices: DeviceRequestList;
+  Devices: DeviceList;
 }
 
 export type RepairApplicationInfoList = Array<RepairApplicationInfo>;
+
+interface updateInfo extends Record<string, any> {
+  id: string;
+  mid: string;
+  lid?: string;
+  status: number;
+  manufacturer: string;
+  cost: number;
+  rtime: string;
+  atime?: string;
+  ftime?: string;
+  brief: string;
+  note?: string;
+  Devices: DeviceList;
+}
 
 export function findRepairApplicationsByMid(
   data: idRequest
@@ -51,6 +62,30 @@ export function findRepairApplicationsByStatus(
 
 export function appendRepairApplication(
   data: RepairApplicationRequest
-): Promise<commonResponse<any>> {
-  return post("/repair/application/appendRepairApplication", data);
+): Promise<commonResponse<undefined>> {
+  return post("/repair/application/append", data);
+}
+
+export function approveRepairApplication(
+  data: idRequest
+): Promise<commonResponse<undefined>> {
+  return post("/repair/application/approve", data);
+}
+
+export function rejectRepairApplication(
+  data: rejectRequest
+): Promise<commonResponse<undefined>> {
+  return post("/repair/application/reject", data);
+}
+
+export function finishRepairApplication(
+  data: idRequest
+): Promise<commonResponse<undefined>> {
+  return post("/repair/application/finish", data);
+}
+
+export function updateRepairApplication(
+  data: updateInfo
+): Promise<commonResponse<updateInfo>> {
+  return post("/repair/application/update", data);
 }

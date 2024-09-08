@@ -11,3 +11,8 @@ export interface idRequest extends Record<string, string> {
 export interface statusRequest extends Record<string, number> {
   status: number;
 }
+
+export interface rejectRequest extends Record<string, string> {
+  id: string;
+  note: string;
+}

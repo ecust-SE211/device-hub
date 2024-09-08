@@ -1,5 +1,5 @@
 import { post, commonResponse } from "@/libs";
-import { idRequest, statusRequest } from "@/libs/type";
+import { idRequest, statusRequest, rejectRequest } from "@/libs/type";
 
 export interface PurchaseApplicationInfo extends Record<string, any> {
   id: string;
@@ -28,6 +28,20 @@ export interface PurchaseApplicationRequest {
   types: TypeRequestList;
 }
 
+interface updateInfo extends Record<string, any> {
+  id: string;
+  mid: string;
+  lid?: string;
+  status: number;
+  cost: number;
+  rtime: string;
+  atime?: string;
+  ftime?: string;
+  brief: string;
+  note?: string;
+  types: TypeRequestList;
+}
+
 export type PurchaseApplicationInfoList = Array<PurchaseApplicationInfo>;
 
 export function findPurchaseApplicationsByMid(
@@ -50,6 +64,30 @@ export function findPurchaseApplicationsByStatus(
 
 export function appendPurchaseApplication(
   data: PurchaseApplicationRequest
-): Promise<commonResponse<any>> {
-  return post("/purchase/application/appendPurchaseApplication", data);
+): Promise<commonResponse<undefined>> {
+  return post("/purchase/application/append", data);
+}
+
+export function approvePurchaseApplication(
+  data: idRequest
+): Promise<commonResponse<undefined>> {
+  return post("/purchase/application/approve", data);
+}
+
+export function rejectPurchaseApplication(
+  data: rejectRequest
+): Promise<commonResponse<undefined>> {
+  return post("/purchase/application/reject", data);
+}
+
+export function finishPurchaseApplication(
+  data: idRequest
+): Promise<commonResponse<undefined>> {
+  return post("/purchase/application/finish", data);
+}
+
+export function updatePurchaseApplication(
+  data: updateInfo
+): Promise<commonResponse<updateInfo>> {
+  return post("/purchase/application/update", data);
 }
