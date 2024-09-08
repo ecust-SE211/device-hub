@@ -1,13 +1,6 @@
 import { post, commonResponse } from "@/libs";
+import { idRequest } from "@/libs/type";
 
-interface idRequest {
-  id: number;
-}
-
-export interface infoEditRequest extends Record<string, string> {
-  tel: string;
-  email: string;
-}
 export interface TypeInfo {
   id: string;
   name: string;
@@ -20,4 +13,8 @@ export function getTypeInfoListById(
   data: idRequest
 ): Promise<commonResponse<TypeInfoList>> {
   return post("/type/findTypesByCid", data);
+}
+
+export function appendType(data: TypeInfo): Promise<commonResponse<undefined>> {
+  return post("/type/appendType", data);
 }

@@ -1,5 +1,5 @@
 "use client";
-import { ReactNode, useEffect, useRef } from "react";
+import { ReactNode, useEffect, useRef, useState } from "react";
 import "./css/animate.css";
 
 type Props = {
@@ -20,7 +20,7 @@ export function LoadingPage(props: Props): ReactNode {
     duration = 400,
     message = "Loading",
   } = props;
-  const loadingSpan = useRef<HTMLSpanElement>(null);
+  const [loadingMessage, setLoadingMessage] = useState(" ");
   let dots = "....";
   let currentTimeOut: NodeJS.Timeout = null!;
   const getNextDots = () => {
@@ -35,23 +35,18 @@ export function LoadingPage(props: Props): ReactNode {
       "....": ".",
     };
     dots = nextDots[dots];
-    loadingSpan.current!.innerHTML = message + dots;
-  };
-  const handleGetNextDots = () => {
-    if (!loadingSpan) return;
-    requestAnimationFrame(getNextDots);
+    setLoadingMessage(message + dots);
   };
   useEffect(() => {
     /** 载入点点点动画 */
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    currentTimeOut = setTimeout(handleGetNextDots, 0);
+    currentTimeOut = setTimeout(() => requestAnimationFrame(getNextDots), 0);
 
     return () => {
       /** 卸载点点点动画 */
       clearTimeout(currentTimeOut);
     };
-  });
+  }, []);
   return (
     <div
       className={`z-[100] -top-2 -left-2 -bottom-2 -right-2 flex flex-col items-center justify-center  backdrop-blur-sm ${
@@ -64,11 +59,8 @@ export function LoadingPage(props: Props): ReactNode {
           animation: `rotation ${rotateSpeed}ms linear infinite`,
         }}
       />
-      <span
-        ref={loadingSpan}
-        className="text-teal-400 font-bold text-base mt-1"
-      >
-        {" "}
+      <span className="text-teal-400 font-bold text-base mt-1">
+        {loadingMessage}
       </span>
     </div>
   );

@@ -1,68 +1,68 @@
 "use client";
-import { Card, List } from "antd";
+import { Card, Modal } from "antd";
 import { useRouter } from "next/navigation";
 import { ReactNode, useEffect, useState } from "react";
 import { LoadingPage, Title } from "@/components";
-import Image from "next/image";
-import { categoryInfo } from "@/utils";
-import Meta from "antd/es/card/Meta";
-
-const typeData = [
-  {
-    id: "T000001",
-    cid: "C001",
-    name: "小烧杯",
-    price: "20",
-    explain: "非常烧的小烧杯",
-  },
-  {
-    id: "T000001",
-    cid: "C001",
-    name: "小烧杯",
-    price: "20",
-    explain: "非常烧的小烧杯",
-  },
-  {
-    id: "T000001",
-    cid: "C001",
-    name: "小烧杯",
-    price: "20",
-    explain: "非常烧的小烧杯",
-  },
-];
+import { categoryInfoList } from "@/utils";
+import { getTypeInfoListById, TypeInfoList } from "@/service";
 
 export default function HomePage(): ReactNode {
+  const router = useRouter();
   const [category, _setCategory] = useState(0);
+  const [fetchError, setFetchError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("Error");
   const [isLoading, setIsLoading] = useState(true);
-  const [typeList, setTypeList] = useState<typeof typeData>([]);
-  const findTypesById = async (id: number) => {
-    return new Promise<typeof typeData>((resolve, reject) => {
-      typeData.forEach((data) => (data.name = `C0${id + 1}`));
-      setTimeout(() => {
-        resolve([
-          ...[...typeData, ...typeData, ...typeData],
-          ...[...typeData, ...typeData, ...typeData],
-          ...[...typeData, ...typeData, ...typeData],
-          ...[...typeData, ...typeData, ...typeData],
-        ]);
-      }, 1000);
-    });
-  };
+  const [typeList, setTypeList] = useState<TypeInfoList>([]);
+
   const fetchData = async () => {
-    const data = await findTypesById(category);
-    setTypeList(data);
-    setIsLoading(false);
+    setIsLoading(true);
+    return getTypeInfoListById({
+      id: categoryInfoList[category].id,
+    })
+      .then((res) => {
+        const { code, msg } = res;
+        console.log(res);
+        if (code !== "200") {
+          setErrorMessage(`Code :${code}\n${msg}`);
+          setFetchError(true);
+          return;
+        }
+        setTypeList(res.data!);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        setErrorMessage(`${err}`);
+        setFetchError(true);
+      });
   };
   const setCategory = (id: number) => {
-    setIsLoading(true);
     _setCategory(id);
-    fetchData;
+    fetchData();
   };
   useEffect(() => {
     fetchData();
-  });
+    // 使用空列表使方法只允许一次
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const renderCards = () => {
-    if (isLoading) return <LoadingPage />;
+    if (isLoading)
+      return (
+        <>
+          <Modal
+            title="FetchData Failed"
+            open={fetchError}
+            okText="Retry"
+            onOk={fetchData}
+            cancelText="Back"
+            onCancel={() => {
+              router.back();
+            }}
+          >
+            <span>{errorMessage}</span>
+          </Modal>
+          <LoadingPage />
+        </>
+      );
     return typeList.map((typeInfo, index) => (
       <div
         key={index}
@@ -74,7 +74,7 @@ export default function HomePage(): ReactNode {
         <div
           className="flex flex-col items-center overflow-hidden h-24"
           style={{
-            backgroundImage: `url(${categoryInfo[category].image.src})`,
+            backgroundImage: `url(${categoryInfoList[category].image.src})`,
             backgroundSize: "auto 100%",
             backgroundRepeat: "no-repeat",
             backgroundPositionX: "50%",
@@ -98,7 +98,7 @@ export default function HomePage(): ReactNode {
         <div className="px-4 py-2 bg-teal-200 text-white text-lg font-semibold border-b-[0.125rem] border-white cursor-default">
           Device Category
         </div>
-        {categoryInfo.map((item, index) => (
+        {categoryInfoList.map((item, index) => (
           <div
             key={index}
             className={`px-4 py-2 zh transition-colors ${
@@ -122,29 +122,6 @@ export default function HomePage(): ReactNode {
         <Card title={<span className="zh">这里是筛选栏</span>} />
         <div className="flex min-h-[10rem] flex-wrap flex-1 gap-4 relative">
           {renderCards()}
-          {/* <Card
-            size="small"
-            key={index}
-            hoverable
-            className="w-40"
-            title={
-              <div className="border-t-4 border-teal-200">{typeInfo.id}</div>
-            }
-            // extra={typeInfo.price}
-            cover={
-              <div
-                className="flex flex-col items-center overflow-hidden h-32"
-                style={{
-                  backgroundImage: `url(${categoryInfo[category].image.src})`,
-                  backgroundSize: "contain",
-                  backgroundRepeat: "no-repeat",
-                  backgroundPositionX: "50%",
-                }}
-              />
-            }
-          >
-            <Meta title={typeInfo.name} description={typeInfo.id} />
-          </Card> */}
         </div>
       </div>
     </div>

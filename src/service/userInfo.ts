@@ -8,11 +8,11 @@ export interface infoEditRequest extends Record<string, string> {
 export function leaderInfoEdit(
   data: infoEditRequest
 ): Promise<commonResponse<undefined>> {
-  return post("/", data);
+  return post("/leader/changeLeaderByToken", data);
 }
 
 export function managerInfoEdit(
   data: infoEditRequest
 ): Promise<commonResponse<undefined>> {
-  return post("/", data);
+  return post("/manager/changeManagerByToken", data);
 }

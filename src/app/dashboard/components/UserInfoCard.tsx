@@ -20,7 +20,7 @@ export default function UserInfoCard(): ReactNode {
       .then((res) => {
         const { code, msg } = res;
         console.log(res);
-        if (code !== 200) {
+        if (code !== "200") {
           messageApi.error(`Code :${code}\n${msg}`);
         }
         localStorage.setItem("tel", values.tel);
