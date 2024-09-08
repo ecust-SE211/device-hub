@@ -8,7 +8,7 @@ import { getTypeInfoListById, TypeInfoList } from "@/service";
 
 export default function HomePage(): ReactNode {
   const router = useRouter();
-  const [category, _setCategory] = useState(0);
+  const [category, setCategory] = useState(0);
   const [fetchError, setFetchError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("Error");
   const [isLoading, setIsLoading] = useState(true);
@@ -16,10 +16,12 @@ export default function HomePage(): ReactNode {
 
   const fetchData = async () => {
     setIsLoading(true);
+    const fetchId = categoryInfoList[category].id;
     return getTypeInfoListById({
-      id: categoryInfoList[category].id,
+      id: fetchId,
     })
       .then((res) => {
+        if (fetchId !== categoryInfoList[category].id) return;
         const { code, msg } = res;
         console.log(res);
         if (code !== "200") {
@@ -34,10 +36,6 @@ export default function HomePage(): ReactNode {
         setErrorMessage(`${err}`);
         setFetchError(true);
       });
-  };
-  const setCategory = (id: number) => {
-    _setCategory(id);
-    fetchData();
   };
   useEffect(() => {
     fetchData();
@@ -111,6 +109,7 @@ export default function HomePage(): ReactNode {
                 ? undefined
                 : () => {
                     setCategory(index);
+                    fetchData();
                   }
             }
           >
