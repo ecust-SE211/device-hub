@@ -1,3 +1,4 @@
+import { get } from "@/libs";
 import c001 from "@/static/category/C001.jpg";
 import c002 from "@/static/category/C002.jpg";
 import c003 from "@/static/category/C003.jpg";
@@ -5,14 +6,52 @@ import c004 from "@/static/category/C004.jpg";
 import c005 from "@/static/category/C005.jpg";
 import c006 from "@/static/category/C006.jpg";
 import c007 from "@/static/category/C007.jpg";
+import { StaticImageData } from "next/image";
 
-const categoryInfo = [
-  { id: 1, name: "电子仪器", image: c001 },
-  { id: 2, name: "试剂", image: c002 },
-  { id: 3, name: "玻璃容器", image: c003 },
-  { id: 4, name: "物理仪器", image: c004 },
-  { id: 5, name: "化学仪器", image: c005 },
-  { id: 6, name: "计算机设备", image: c006 },
-  { id: 7, name: "电子设备", image: c007 },
-];
-export { categoryInfo };
+const imageList: Record<string, StaticImageData> = {
+  C001: c001,
+  C002: c002,
+  C003: c003,
+  C004: c004,
+  C005: c005,
+  C006: c006,
+  C007: c007,
+};
+
+export interface GetCategoryInfoResponse {
+  id: string;
+  name: string;
+  description: string;
+  image?: StaticImageData;
+}
+
+export type GetCategoryInfoListResponse = Array<GetCategoryInfoResponse>;
+export interface CategoryInfo {
+  id: string;
+  name: string;
+  description: string;
+  image: StaticImageData;
+}
+
+export type CategoryInfoList = Array<CategoryInfo>;
+
+const categoryInfoList: CategoryInfoList = [];
+const initCategoryInfo = async () => {
+  const res = await get<GetCategoryInfoListResponse>(
+    "/category/getCategoryList"
+  );
+  const { code, msg } = res;
+  console.log(res);
+  if (code !== "200") {
+    throw new Error(`Code :${code}\n${msg}`);
+  }
+  while (categoryInfoList.length != 0) categoryInfoList.pop();
+  categoryInfoList.push(
+    ...res.data!.map((info, index) => {
+      info.image = imageList[info.id];
+      return info as CategoryInfo;
+    })
+  );
+};
+
+export { categoryInfoList, initCategoryInfo };

@@ -1,13 +1,15 @@
 "use client";
 import { LoadingPage } from "@/components";
-import { Affix } from "antd";
+import { Affix, Modal } from "antd";
 import React, { Suspense, useEffect, useState } from "react";
 import { debounce, throttle } from "lodash";
 import NavBar from "./components/NavBar";
 import UserInfoCard from "./components/UserInfoCard";
 import { isLogin } from "@/utils";
 import { useRouter } from "next/navigation";
+import { init, isInitialized } from "@/utils";
 function DashBoardLayout({ children }: React.PropsWithChildren) {
+  const [initError, setInitError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [hiddenUserInfo, setHiddenUserInfo] = useState(true);
   const router = useRouter();
@@ -31,9 +33,21 @@ function DashBoardLayout({ children }: React.PropsWithChildren) {
   }, 200);
   useEffect(() => {
     handleResize();
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 100);
+    if (!isInitialized()) {
+      init()
+        .then((res) => {
+          setTimeout(() => {
+            setIsLoading(false);
+          }, 100);
+        })
+        .catch((err) => {
+          setInitError(true);
+        });
+    } else {
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 100);
+    }
     window.addEventListener("scrollend", handleScrollEnd);
     window.addEventListener("resize", handleResize);
     return () => {
@@ -48,7 +62,43 @@ function DashBoardLayout({ children }: React.PropsWithChildren) {
   //   // There will be a redirecting Page.
   //   return <LoadingPage />;
   // }
-  if (isLoading) return <LoadingPage />;
+  if (isLoading) {
+    let retrying = false;
+    const handleRetry = () => {
+      setInitError(false);
+      if (retrying) return;
+      retrying = true;
+      init()
+        .then((res) => {
+          setTimeout(() => {
+            setIsLoading(false);
+          }, 100);
+        })
+        .catch((err) => {
+          setInitError(true);
+        });
+    };
+    const handleBack = () => {
+      router.back();
+    };
+    return (
+      <>
+        <Modal
+          title="Initialized Failed"
+          open={initError}
+          okText="Retry"
+          onOk={handleRetry}
+          cancelText="Back"
+          onCancel={handleBack}
+        >
+          <span>
+            Failed to load server resources, please try again or login again.
+          </span>
+        </Modal>
+        <LoadingPage />
+      </>
+    );
+  }
   return (
     <>
       <NavBar />

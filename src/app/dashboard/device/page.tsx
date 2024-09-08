@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { ReactNode, useEffect, useState } from "react";
 import { LoadingPage, Title } from "@/components";
 import Image from "next/image";
-import { categoryInfo } from "@/utils";
+import { categoryInfoList } from "@/utils";
 import Meta from "antd/es/card/Meta";
 
 const typeData = [
@@ -74,7 +74,7 @@ export default function HomePage(): ReactNode {
         <div
           className="flex flex-col items-center overflow-hidden h-24"
           style={{
-            backgroundImage: `url(${categoryInfo[category].image.src})`,
+            backgroundImage: `url(${categoryInfoList[category].image.src})`,
             backgroundSize: "auto 100%",
             backgroundRepeat: "no-repeat",
             backgroundPositionX: "50%",
@@ -98,7 +98,7 @@ export default function HomePage(): ReactNode {
         <div className="px-4 py-2 bg-teal-200 text-white text-lg font-semibold border-b-[0.125rem] border-white cursor-default">
           Device Category
         </div>
-        {categoryInfo.map((item, index) => (
+        {categoryInfoList.map((item, index) => (
           <div
             key={index}
             className={`px-4 py-2 zh transition-colors ${

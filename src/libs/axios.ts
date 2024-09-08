@@ -20,7 +20,7 @@ export async function get<T>(
   url: string,
   config?: AxiosRequestConfig
 ): Promise<commonResponse<T>> {
-  return customAxios.get(url, config);
+  return (await customAxios.get(url, config)).data;
 }
 
 export async function post<T>(
@@ -28,7 +28,7 @@ export async function post<T>(
   data?: any,
   config?: AxiosRequestConfig
 ): Promise<commonResponse<T>> {
-  return customAxios.post(url, data, config);
+  return (await customAxios.post(url, data, config)).data;
 }
 
 export { customAxios };

@@ -1,7 +1,6 @@
 "use client";
 import { Card, Button } from "antd";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { ReactNode } from "react";
 import { Title, FlexCenter } from "@/components";
 export default function HomePage(): ReactNode {
