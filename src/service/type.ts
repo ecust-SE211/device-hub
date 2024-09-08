@@ -14,3 +14,7 @@ export function getTypeInfoListById(
 ): Promise<commonResponse<TypeInfoList>> {
   return post("/type/findTypesByCid", data);
 }
+
+export function appendType(data: TypeInfo): Promise<commonResponse<undefined>> {
+  return post("/type/appendType", data);
+}

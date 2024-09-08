@@ -13,6 +13,12 @@ export interface DeviceInfo extends Record<string, any> {
   note?: string;
 }
 
+export interface DeviceRequest extends Record<string, any> {
+  id: string;
+  purchaseApplicationId: string;
+  note?: string;
+}
+
 export type DeviceInfoList = Array<DeviceInfo>;
 
 export async function findDevicesByCid(
@@ -43,4 +49,10 @@ export async function findDevicesByStatus(
   data: statusRequest
 ): Promise<commonResponse<DeviceInfoList>> {
   return post("/device/findDevicesByStatus", data);
+}
+
+export async function appendDevice(
+  data: DeviceRequest
+): Promise<commonResponse<undefined>> {
+  return post("/device/appendDevice", data);
 }
