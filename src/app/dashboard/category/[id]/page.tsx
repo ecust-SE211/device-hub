@@ -9,7 +9,7 @@ import Search from "antd/es/input/Search";
 
 interface Props {
   params: {
-    category?: string;
+    id?: string;
   };
 }
 export default function TypeListPage(props: Props): ReactNode {
@@ -20,11 +20,10 @@ export default function TypeListPage(props: Props): ReactNode {
   const [typeList, setTypeList] = useState<TypeInfoList>([]);
   const typeData = useRef<TypeInfoList>([]);
   const router = useRouter();
-  const { category } = props.params;
-  if (category) {
+  const { id: cid } = props.params;
+  if (cid) {
     try {
-      if (!categoryInfoMap.has(category))
-        router.replace("/dashboard/category/C001");
+      if (!categoryInfoMap.has(cid)) router.replace("/dashboard/category/C001");
     } catch (error) {
       router.replace("/dashboard/category/C001");
     }
@@ -33,7 +32,7 @@ export default function TypeListPage(props: Props): ReactNode {
 
   const fetchData = async () => {
     setIsLoading(true);
-    const fetchId = category!;
+    const fetchId = cid!;
     return getTypeInfoListById({
       id: fetchId,
     })
@@ -73,12 +72,12 @@ export default function TypeListPage(props: Props): ReactNode {
         <div
           key={key}
           className={`px-4 py-2 zh transition-colors ${
-            key == category
+            key == cid
               ? "bg-teal-300 text-white cursor-default"
               : "text-teal-500 hover:bg-teal-100 cursor-pointer"
           }`}
           onClick={
-            key == category
+            key == cid
               ? undefined
               : () => {
                   router.replace(`/dashboard/category/${key}`);
@@ -114,6 +113,9 @@ export default function TypeListPage(props: Props): ReactNode {
       <div
         key={index}
         className="w-40 pb-2 flex flex-col bg-white rounded-xl border-t-4 border-teal-200 cursor-pointer transition-shadow hover:shadow-md"
+        onClick={() => {
+          router.push(`/dashboard/type/${typeInfo.id}`);
+        }}
       >
         <div className="flex">
           <Title size={1} title={typeInfo.id} />
@@ -121,9 +123,7 @@ export default function TypeListPage(props: Props): ReactNode {
         <div
           className="flex flex-col items-center overflow-hidden h-24"
           style={{
-            backgroundImage: `url(${
-              categoryInfoMap.get(category!)!.image.src
-            })`,
+            backgroundImage: `url(${categoryInfoMap.get(cid!)!.image.src})`,
             backgroundSize: "auto 100%",
             backgroundRepeat: "no-repeat",
             backgroundPositionX: "50%",

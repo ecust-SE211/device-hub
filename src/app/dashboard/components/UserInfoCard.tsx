@@ -16,7 +16,13 @@ export default function UserInfoCard(): ReactNode {
   const submit = (values: any) => {
     if (submitting) return;
     setSubmitting(true);
-    infoEdit(values)
+    const { tel, email } = values;
+    if (tel === getTel() && email === getEmail()) {
+      setSubmitting(false);
+      setEditing(false);
+      return;
+    }
+    infoEdit({ tel, email })
       .then((res) => {
         const { code, msg } = res;
         console.log(res);
@@ -60,6 +66,8 @@ export default function UserInfoCard(): ReactNode {
       <div className="w-full bg-white rounded-xl px-4 py-2">
         <Form
           initialValues={{
+            id: getId(),
+            name: getName(),
             tel: getTel(),
             email: getEmail(),
           }}
@@ -67,31 +75,31 @@ export default function UserInfoCard(): ReactNode {
           labelCol={{ span: 6 }}
           onFinish={submit}
         >
-          <FormItem label="Id">
+          <FormItem name="id" label="Id">
             <Input
               style={{ color: "#0d9488", fontSize: "0.75rem" }}
-              defaultValue={getId()}
+              // defaultValue={getId()}
               disabled
             />
           </FormItem>
-          <FormItem label="Name">
+          <FormItem name="name" label="Name">
             <Input
               style={{ color: "#0d9488", fontSize: "0.75rem" }}
-              defaultValue={getName()}
+              // defaultValue={getName()}
               disabled
             />
           </FormItem>
           <FormItem name="tel" label="Tel">
             <Input
               style={{ color: "#0d9488", fontSize: "0.75rem" }}
-              defaultValue={getTel()}
+              // defaultValue={getTel()}
               disabled={!editing}
             />
           </FormItem>
           <FormItem name="email" label="Email">
             <Input
               style={{ color: "#0d9488", fontSize: "0.75rem" }}
-              defaultValue={getEmail()}
+              // defaultValue={getEmail()}
               disabled={!editing}
             />
           </FormItem>
