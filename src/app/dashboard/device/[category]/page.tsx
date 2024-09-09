@@ -59,7 +59,12 @@ export default function TypeListPage(props: Props): ReactNode {
         setFetchError(true);
       });
   };
-  const queryData = (query: string) => {};
+  const queryData = (query: string) => {
+    const typeInfoList = typeData.current.filter((item) => {
+      return `${item.explain}${item.name}`.includes(query);
+    });
+    setTypeList(typeInfoList);
+  };
   useEffect(() => {
     fetchData();
     // 使用空列表使方法只允许一次
