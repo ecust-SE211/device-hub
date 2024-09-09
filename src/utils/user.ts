@@ -45,7 +45,7 @@ const getTel = () => {
   return tel ?? undefined;
 };
 const isLogin = () => {
-  return !!localStorage.getItem("Token");
+  return !!localStorage.getItem("token");
 };
 export {
   clearUserInfo,

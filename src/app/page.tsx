@@ -3,8 +3,10 @@ import { Card, Button } from "antd";
 import { useRouter } from "next/navigation";
 import { ReactNode } from "react";
 import { Title, FlexCenter } from "@/components";
+import { isLogin } from "@/utils";
 export default function HomePage(): ReactNode {
   const router = useRouter();
+  if (isLogin()) router.push("/dashboard");
   return (
     <FlexCenter>
       <Card title={<Title size={1.5} className="w-full" useFavicon />}>

@@ -60,7 +60,7 @@ export default function NavBar(): ReactNode {
             : "hover:bg-[#0001] rounded-md"
         }
         onClick={
-          deviceActive ? undefined : () => router.push("/dashboard/device")
+          deviceActive ? undefined : () => router.push("/dashboard/device/0")
         }
       />
       {dashboardActive && (
