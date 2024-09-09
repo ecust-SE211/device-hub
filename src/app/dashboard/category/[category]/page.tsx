@@ -24,9 +24,9 @@ export default function TypeListPage(props: Props): ReactNode {
   if (category) {
     try {
       if (!categoryInfoMap.has(category))
-        router.replace("/dashboard/device/C001");
+        router.replace("/dashboard/category/C001");
     } catch (error) {
-      router.replace("/dashboard/device/C001");
+      router.replace("/dashboard/category/C001");
     }
   }
   // const temp = parseInt(params.category);
@@ -81,7 +81,7 @@ export default function TypeListPage(props: Props): ReactNode {
             key == category
               ? undefined
               : () => {
-                  router.replace(`/dashboard/device/${key}`);
+                  router.replace(`/dashboard/category/${key}`);
                 }
           }
         >
