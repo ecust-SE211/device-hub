@@ -6,6 +6,7 @@ import c004 from "@/static/category/C004.jpg";
 import c005 from "@/static/category/C005.jpg";
 import c006 from "@/static/category/C006.jpg";
 import c007 from "@/static/category/C007.jpg";
+import blank from "@/static/test.jpg";
 import { StaticImageData } from "next/image";
 
 const imageList: Record<string, StaticImageData> = {
@@ -33,9 +34,9 @@ export interface CategoryInfo {
   image: StaticImageData;
 }
 
-export type CategoryInfoList = Array<CategoryInfo>;
+export type CategoryInfoList = Map<string, CategoryInfo>;
 
-const categoryInfoList: CategoryInfoList = [];
+const categoryInfoList: CategoryInfoList = new Map();
 const initCategoryInfo = async () => {
   const res = await get<GetCategoryInfoListResponse>(
     "/category/getCategoryList"
@@ -45,13 +46,11 @@ const initCategoryInfo = async () => {
   if (code !== "200") {
     throw new Error(`Code :${code}\n${msg}`);
   }
-  while (categoryInfoList.length != 0) categoryInfoList.pop();
-  categoryInfoList.push(
-    ...res.data!.map((info, index) => {
-      info.image = imageList[info.id];
-      return info as CategoryInfo;
-    })
-  );
+  categoryInfoList.clear();
+  res.data!.forEach((info, index) => {
+    info.image = imageList[info.id] ?? blank;
+    categoryInfoList.set(info.id, info as CategoryInfo);
+  });
 };
 
-export { categoryInfoList, initCategoryInfo };
+export { categoryInfoList as categoryInfoMap, initCategoryInfo };
