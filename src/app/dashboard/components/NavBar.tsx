@@ -9,7 +9,7 @@ export default function NavBar(): ReactNode {
   const pathname = usePathname();
   const pathSplit = pathname.split("/");
   const dashboardActive = pathSplit.length === 2;
-  const deviceActive = pathSplit.length > 2 && pathSplit[2] === "device";
+  const deviceActive = pathSplit.length > 2 && pathSplit[2] === "category";
   const applicationActive =
     pathSplit.length > 2 && pathSplit[2] === "application";
   const handleScroll = throttle(() => {
@@ -60,7 +60,9 @@ export default function NavBar(): ReactNode {
             : "hover:bg-[#0001] rounded-md"
         }
         onClick={
-          deviceActive ? undefined : () => router.push("/dashboard/device")
+          deviceActive
+            ? undefined
+            : () => router.push("/dashboard/category/C001")
         }
       />
       {dashboardActive && (

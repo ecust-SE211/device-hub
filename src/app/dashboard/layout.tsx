@@ -56,12 +56,12 @@ function DashBoardLayout({ children }: React.PropsWithChildren) {
     };
   });
 
-  // if (!isLogin()) {
-  //   alert("You must login first.");
-  //   router.push("/");
-  //   // There will be a redirecting Page.
-  //   return <LoadingPage />;
-  // }
+  if (!isLogin()) {
+    alert("You must login first.");
+    router.push("/");
+    // There will be a redirecting Page.
+    return <LoadingPage />;
+  }
   if (isLoading) {
     let retrying = false;
     const handleRetry = () => {
