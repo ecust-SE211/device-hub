@@ -1,4 +1,4 @@
-import { post, commonResponse } from "@/libs";
+import { post, commonResponse, get } from "@/libs";
 import { idRequest, statusRequest, rejectRequest } from "@/libs/type";
 
 export interface RepairApplicationInfo extends Record<string, any> {
@@ -40,6 +40,11 @@ interface updateInfo extends Record<string, any> {
   brief: string;
   note?: string;
   Devices: DeviceList;
+}
+export function getRepairApplications(): Promise<
+  commonResponse<RepairApplicationInfoList>
+> {
+  return get("/repair/application/get");
 }
 
 export function findRepairApplicationsByMid(

@@ -1,4 +1,4 @@
-import { post, commonResponse } from "@/libs";
+import { post, commonResponse, get } from "@/libs";
 import { idRequest, statusRequest, rejectRequest } from "@/libs/type";
 
 export interface PurchaseApplicationInfo extends Record<string, any> {
@@ -43,6 +43,12 @@ interface updateInfo extends Record<string, any> {
 }
 
 export type PurchaseApplicationInfoList = Array<PurchaseApplicationInfo>;
+
+export function getPurchaseApplications(): Promise<
+  commonResponse<PurchaseApplicationInfoList>
+> {
+  return get("/purchase/application/get");
+}
 
 export function findPurchaseApplicationsByMid(
   data: idRequest

@@ -1,4 +1,4 @@
-import { post, commonResponse } from "@/libs";
+import { post, commonResponse, get } from "@/libs";
 import { idRequest, rejectRequest, statusRequest } from "@/libs/type";
 import { DeviceList } from "./repairApplication";
 
@@ -35,6 +35,11 @@ interface updateInfo extends Record<string, any> {
 
 export type ScrapApplicationInfoList = Array<ScrapApplicationInfo>;
 
+export function getScrapApplications(): Promise<
+  commonResponse<ScrapApplicationInfoList>
+> {
+  return get("/scrap/application/get");
+}
 export function findScrapApplicationsByMid(
   data: idRequest
 ): Promise<commonResponse<ScrapApplicationInfoList>> {
