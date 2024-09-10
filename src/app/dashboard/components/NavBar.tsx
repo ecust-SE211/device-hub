@@ -9,7 +9,11 @@ export default function NavBar(): ReactNode {
   const pathname = usePathname();
   const pathSplit = pathname.split("/");
   const dashboardActive = pathSplit.length === 2;
-  const deviceActive = pathSplit.length > 2 && pathSplit[2] === "category";
+  const deviceActive =
+    pathSplit.length > 2 &&
+    (pathSplit[2] === "category" ||
+      pathSplit[2] === "type" ||
+      pathSplit[2] === "device");
   const applicationActive =
     pathSplit.length > 2 && pathSplit[2] === "application";
   const handleScroll = throttle(() => {

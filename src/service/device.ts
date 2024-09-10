@@ -1,12 +1,19 @@
-import { post, commonResponse } from "@/libs";
-import { idRequest, statusRequest } from "@/libs/type";
+import { post, CommonResponse } from "@/libs";
+import {
+  DeviceStatus,
+  IdPageRequest,
+  IdRequest,
+  PageResponse,
+  StatusPageRequest,
+  StatusRequest,
+} from "@/libs/type";
 
 export interface DeviceInfo extends Record<string, any> {
   id: string;
   tid: string;
-  status: number;
+  status: DeviceStatus;
   purchaseApplicationId: string;
-  scrapapplicationId?: string;
+  scrapApplicationId?: string;
   manufacter?: string;
   storageTime: string;
   scrapTime?: string;
@@ -20,45 +27,75 @@ export interface DeviceRequest extends Record<string, any> {
 }
 
 export type DeviceInfoList = Array<DeviceInfo>;
+export type DeviceInfoPage = PageResponse<DeviceInfo>;
+// export async function findDevicesByCid(
+//   data: idRequest
+// ): Promise<commonResponse<DeviceInfoList>> {
+//   return post("/device/findDevicesByCid", data);
+// }
 
-export async function findDevicesByCid(
-  data: idRequest
-): Promise<commonResponse<DeviceInfoList>> {
-  return post("/device/findDevicesByCid", data);
+export async function findDeviceByDid(
+  data: IdRequest
+): Promise<CommonResponse<{ type: string } & DeviceInfo>> {
+  return post("/device/findDeviceByDid", data);
+}
+
+export async function findDevicePageByTid(
+  data: IdPageRequest
+): Promise<CommonResponse<DeviceInfoPage>> {
+  return post("/device/findDevicesByTid/page", data);
+}
+
+export async function findDevicePageByPid(
+  data: IdPageRequest
+): Promise<CommonResponse<DeviceInfoPage>> {
+  return post("/device/findDevicesByPid/page", data);
+}
+
+export async function findDevicePageBySid(
+  data: IdPageRequest
+): Promise<CommonResponse<DeviceInfoPage>> {
+  return post("/device/findDevicesBySid/page", data);
+}
+
+export async function findDevicePageByStatus(
+  data: StatusPageRequest
+): Promise<CommonResponse<DeviceInfoPage>> {
+  return post("/device/findDevicesByStatus/page", data);
 }
 
 export async function findDevicesByTid(
-  data: idRequest
-): Promise<commonResponse<DeviceInfoList>> {
+  data: IdRequest
+): Promise<CommonResponse<DeviceInfoList>> {
   return post("/device/findDevicesByTid", data);
 }
 
 export async function findDevicesByPid(
-  data: idRequest
-): Promise<commonResponse<DeviceInfoList>> {
+  data: IdRequest
+): Promise<CommonResponse<DeviceInfoList>> {
   return post("/device/findDevicesByPid", data);
 }
 
 export async function findDevicesBySid(
-  data: idRequest
-): Promise<commonResponse<DeviceInfoList>> {
+  data: IdRequest
+): Promise<CommonResponse<DeviceInfoList>> {
   return post("/device/findDevicesBySid", data);
 }
 
 export async function findDevicesByStatus(
-  data: statusRequest
-): Promise<commonResponse<DeviceInfoList>> {
+  data: StatusRequest
+): Promise<CommonResponse<DeviceInfoList>> {
   return post("/device/findDevicesByStatus", data);
 }
 
 export async function appendDevice(
   data: DeviceRequest
-): Promise<commonResponse<undefined>> {
+): Promise<CommonResponse<undefined>> {
   return post("/device/appendDevice", data);
 }
 
 export async function updateDevice(
   data: DeviceInfo
-): Promise<commonResponse<DeviceInfo>> {
+): Promise<CommonResponse<DeviceInfo>> {
   return post("/device/updateDevice", data);
 }

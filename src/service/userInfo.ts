@@ -1,4 +1,4 @@
-import { post, commonResponse } from "@/libs";
+import { post, CommonResponse } from "@/libs";
 
 export interface infoEditRequest extends Record<string, string> {
   tel: string;
@@ -7,12 +7,12 @@ export interface infoEditRequest extends Record<string, string> {
 
 export function leaderInfoEdit(
   data: infoEditRequest
-): Promise<commonResponse<undefined>> {
+): Promise<CommonResponse<undefined>> {
   return post("/leader/changeLeaderByToken", data);
 }
 
 export function managerInfoEdit(
   data: infoEditRequest
-): Promise<commonResponse<undefined>> {
+): Promise<CommonResponse<undefined>> {
   return post("/manager/changeManagerByToken", data);
 }

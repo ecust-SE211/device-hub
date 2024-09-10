@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { ReactNode, useEffect, useRef, useState } from "react";
 import { LoadingPage, Title } from "@/components";
 import { categoryInfoMap } from "@/utils";
-import { getTypeInfoListById, TypeInfoList } from "@/service";
+import { getTypeInfoListByCId, TypeInfoList } from "@/service";
 import Search from "antd/es/input/Search";
 
 interface Props {
@@ -33,7 +33,7 @@ export default function TypeListPage(props: Props): ReactNode {
   const fetchData = async () => {
     setIsLoading(true);
     const fetchId = cid!;
-    return getTypeInfoListById({
+    return getTypeInfoListByCId({
       id: fetchId,
     })
       .then((res) => {

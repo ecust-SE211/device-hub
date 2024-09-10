@@ -1,16 +1,16 @@
-import { post, commonResponse } from "@/libs";
-import { idRequest, statusRequest } from "@/libs/type";
+import { post, CommonResponse } from "@/libs";
+import { IdRequest, StatusRequest } from "@/libs/type";
 import { DeviceInfoList } from "./device";
 import { RepairApplicationInfoList } from "./repairApplication";
 
 export function findDevicesByRid(
-  data: idRequest
-): Promise<commonResponse<DeviceInfoList>> {
+  data: IdRequest
+): Promise<CommonResponse<DeviceInfoList>> {
   return post("repairrecord/findDevicesByRid", data);
 }
 
 export function findRepairApplicationsByDid(
-  data: idRequest
-): Promise<commonResponse<RepairApplicationInfoList>> {
+  data: IdRequest
+): Promise<CommonResponse<RepairApplicationInfoList>> {
   return post("repairrecord/findRepairApplicationsByDid", data);
 }

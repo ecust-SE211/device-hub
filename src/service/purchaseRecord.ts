@@ -1,5 +1,5 @@
-import { post, commonResponse } from "@/libs";
-import { idRequest, statusRequest } from "@/libs/type";
+import { post, CommonResponse } from "@/libs";
+import { IdRequest, StatusRequest } from "@/libs/type";
 
 interface TypeWithNum extends Record<string, any> {
   id: string;
@@ -12,13 +12,13 @@ interface TypeWithNum extends Record<string, any> {
 export type TypeWithNumList = Array<TypeWithNum>;
 
 export function findTypesByPid(
-  data: idRequest
-): Promise<commonResponse<TypeWithNumList>> {
+  data: IdRequest
+): Promise<CommonResponse<TypeWithNumList>> {
   return post("/type/findTypesByPid", data);
 }
 
 export function findRequiredQuantityOfTypesByPid(
-  data: idRequest
-): Promise<commonResponse<TypeWithNumList>> {
+  data: IdRequest
+): Promise<CommonResponse<TypeWithNumList>> {
   return post("/type/findRequiredQuantityOfTypesByPid", data);
 }
