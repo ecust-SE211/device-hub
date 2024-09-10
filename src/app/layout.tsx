@@ -31,6 +31,8 @@ function RootLayout({ children }: React.PropsWithChildren) {
               colorInfo: tealPrimary,
               colorLink: tealPrimary,
               colorPrimary: tealPrimary,
+              padding: 12,
+              paddingLG: 16,
             },
             components: {
               Card: {

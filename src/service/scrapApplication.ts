@@ -1,12 +1,17 @@
-import { post, commonResponse } from "@/libs";
-import { idRequest, rejectRequest, statusRequest } from "@/libs/type";
+import { post, CommonResponse, get } from "@/libs";
+import {
+  ApplicationStatus,
+  IdRequest,
+  RejectRequest,
+  StatusRequest,
+} from "@/libs/type";
 import { DeviceList } from "./repairApplication";
 
 export interface ScrapApplicationInfo extends Record<string, any> {
   id: string;
   mid: string;
   lid?: string;
-  status: number;
+  status: ApplicationStatus;
   rtime: string;
   atime?: string;
   ftime?: string;
@@ -24,7 +29,7 @@ interface updateInfo extends Record<string, any> {
   id: string;
   mid: string;
   lid?: string;
-  status: number;
+  status: ApplicationStatus;
   rtime: string;
   atime?: string;
   ftime?: string;
@@ -35,50 +40,55 @@ interface updateInfo extends Record<string, any> {
 
 export type ScrapApplicationInfoList = Array<ScrapApplicationInfo>;
 
+export function getScrapApplications(): Promise<
+  CommonResponse<ScrapApplicationInfoList>
+> {
+  return get("/scrap/application/get");
+}
 export function findScrapApplicationsByMid(
-  data: idRequest
-): Promise<commonResponse<ScrapApplicationInfoList>> {
+  data: IdRequest
+): Promise<CommonResponse<ScrapApplicationInfoList>> {
   return post("/scrap/application/findByMid", data);
 }
 
 export function findScrapApplicationsByLid(
-  data: idRequest
-): Promise<commonResponse<ScrapApplicationInfoList>> {
+  data: IdRequest
+): Promise<CommonResponse<ScrapApplicationInfoList>> {
   return post("/scrap/application/findByLid", data);
 }
 
 export function findScrapApplicationsByStatus(
-  data: statusRequest
-): Promise<commonResponse<ScrapApplicationInfoList>> {
+  data: StatusRequest
+): Promise<CommonResponse<ScrapApplicationInfoList>> {
   return post("/scrap/application/findByStatus", data);
 }
 
 export function appendScrapApplication(
   data: ScrapApplicationRequest
-): Promise<commonResponse<any>> {
+): Promise<CommonResponse<any>> {
   return post("/scrap/application/append", data);
 }
 
 export function approveScrapApplication(
-  data: idRequest
-): Promise<commonResponse<undefined>> {
+  data: IdRequest
+): Promise<CommonResponse<undefined>> {
   return post("/scrap/application/approve", data);
 }
 
 export function rejectScrapApplication(
-  data: rejectRequest
-): Promise<commonResponse<undefined>> {
+  data: RejectRequest
+): Promise<CommonResponse<undefined>> {
   return post("/scrap/application/reject", data);
 }
 
 export function finishScrapApplication(
-  data: idRequest
-): Promise<commonResponse<undefined>> {
+  data: IdRequest
+): Promise<CommonResponse<undefined>> {
   return post("/scrap/application/finish", data);
 }
 
 export function updateScrapApplication(
   data: updateInfo
-): Promise<commonResponse<updateInfo>> {
+): Promise<CommonResponse<updateInfo>> {
   return post("/scrap/application/update", data);
 }

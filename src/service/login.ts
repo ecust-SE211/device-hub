@@ -1,4 +1,4 @@
-import { post, commonResponse } from "@/libs";
+import { post, CommonResponse } from "@/libs";
 
 export interface LoginRequest extends Record<string, string> {
   id: string;
@@ -15,12 +15,12 @@ export interface LoginResponse extends Record<string, string> {
 
 export function leaderLogin(
   data: LoginRequest
-): Promise<commonResponse<LoginResponse>> {
+): Promise<CommonResponse<LoginResponse>> {
   return post("/login/leader", data);
 }
 
 export function managerLogin(
   data: LoginRequest
-): Promise<commonResponse<LoginResponse>> {
+): Promise<CommonResponse<LoginResponse>> {
   return post("/login/manager", data);
 }

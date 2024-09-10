@@ -20,6 +20,9 @@ type Props = {
   returnButton?: boolean;
   /** 显示网站标志 */
   useFavicon?: boolean;
+
+  /** 指针为pointer样式 */
+  pointer?: boolean;
 };
 export function Title(props: Props): ReactNode {
   const {
@@ -32,6 +35,7 @@ export function Title(props: Props): ReactNode {
     onClick,
     returnButton,
     useFavicon,
+    pointer,
   } = props;
   const router = useRouter();
   return (
@@ -39,7 +43,7 @@ export function Title(props: Props): ReactNode {
       className={`flex items-center justify-center gap-2 transition-colors ${className}`}
       style={{
         ...{
-          cursor: onClick ? "pointer" : "default",
+          cursor: onClick || pointer ? "pointer" : "default",
         },
         ...style,
       }}

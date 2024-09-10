@@ -1,11 +1,16 @@
-import { post, commonResponse } from "@/libs";
-import { idRequest, statusRequest, rejectRequest } from "@/libs/type";
+import { post, CommonResponse, get } from "@/libs";
+import {
+  IdRequest,
+  StatusRequest,
+  RejectRequest,
+  ApplicationStatus,
+} from "@/libs/type";
 
 export interface PurchaseApplicationInfo extends Record<string, any> {
   id: string;
   mid: string;
   lid?: string;
-  status: number;
+  status: ApplicationStatus;
   cost: number;
   rtime: string;
   atime?: string;
@@ -32,7 +37,7 @@ interface updateInfo extends Record<string, any> {
   id: string;
   mid: string;
   lid?: string;
-  status: number;
+  status: ApplicationStatus;
   cost: number;
   rtime: string;
   atime?: string;
@@ -44,50 +49,56 @@ interface updateInfo extends Record<string, any> {
 
 export type PurchaseApplicationInfoList = Array<PurchaseApplicationInfo>;
 
+export function getPurchaseApplications(): Promise<
+  CommonResponse<PurchaseApplicationInfoList>
+> {
+  return get("/purchase/application/get");
+}
+
 export function findPurchaseApplicationsByMid(
-  data: idRequest
-): Promise<commonResponse<PurchaseApplicationInfoList>> {
+  data: IdRequest
+): Promise<CommonResponse<PurchaseApplicationInfoList>> {
   return post("/purchase/application/findByMid", data);
 }
 
 export function findPurchaseApplicationsByLid(
-  data: idRequest
-): Promise<commonResponse<PurchaseApplicationInfoList>> {
+  data: IdRequest
+): Promise<CommonResponse<PurchaseApplicationInfoList>> {
   return post("/purchase/application/findByLid", data);
 }
 
 export function findPurchaseApplicationsByStatus(
-  data: statusRequest
-): Promise<commonResponse<PurchaseApplicationInfoList>> {
+  data: StatusRequest
+): Promise<CommonResponse<PurchaseApplicationInfoList>> {
   return post("/purchase/application/findByStatus", data);
 }
 
 export function appendPurchaseApplication(
   data: PurchaseApplicationRequest
-): Promise<commonResponse<undefined>> {
+): Promise<CommonResponse<undefined>> {
   return post("/purchase/application/append", data);
 }
 
 export function approvePurchaseApplication(
-  data: idRequest
-): Promise<commonResponse<undefined>> {
+  data: IdRequest
+): Promise<CommonResponse<undefined>> {
   return post("/purchase/application/approve", data);
 }
 
 export function rejectPurchaseApplication(
-  data: rejectRequest
-): Promise<commonResponse<undefined>> {
+  data: RejectRequest
+): Promise<CommonResponse<undefined>> {
   return post("/purchase/application/reject", data);
 }
 
 export function finishPurchaseApplication(
-  data: idRequest
-): Promise<commonResponse<undefined>> {
+  data: IdRequest
+): Promise<CommonResponse<undefined>> {
   return post("/purchase/application/finish", data);
 }
 
 export function updatePurchaseApplication(
   data: updateInfo
-): Promise<commonResponse<updateInfo>> {
+): Promise<CommonResponse<updateInfo>> {
   return post("/purchase/application/update", data);
 }

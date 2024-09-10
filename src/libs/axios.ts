@@ -1,4 +1,4 @@
-import { commonResponse } from "./type";
+import { CommonResponse } from "./type";
 import axios, { AxiosRequestConfig } from "axios";
 const customAxios = axios.create({
   baseURL: "http://localhost:8088",
@@ -19,7 +19,7 @@ customAxios.interceptors.request.use(
 export async function get<T>(
   url: string,
   config?: AxiosRequestConfig
-): Promise<commonResponse<T>> {
+): Promise<CommonResponse<T>> {
   return (await customAxios.get(url, config)).data;
 }
 
@@ -27,7 +27,7 @@ export async function post<T>(
   url: string,
   data?: any,
   config?: AxiosRequestConfig
-): Promise<commonResponse<T>> {
+): Promise<CommonResponse<T>> {
   return (await customAxios.post(url, data, config)).data;
 }
 

@@ -29,6 +29,7 @@ export default function TypeListPage(props: Props): ReactNode {
     id: "",
     name: "",
     price: "",
+    category: "",
   });
   const deviceList = useRef<DeviceInfoList>([]);
   const router = useRouter();
@@ -136,7 +137,7 @@ export default function TypeListPage(props: Props): ReactNode {
               color="error"
               onClick={() =>
                 router.push(
-                  `/dashboard/application/scraped/${record.scrapapplicationId}`
+                  `/dashboard/application/scraped/${record.scrapApplicationId}`
                 )
               }
             >
@@ -185,7 +186,49 @@ export default function TypeListPage(props: Props): ReactNode {
   return (
     <div className="flex w-full items-start gap-4">
       <div className="flex flex-col flex-wrap flex-1 gap-4">
-        <Card>TypeInfo</Card>
+        <div className="rounded-xl inline-flex overflow-hidden">
+          <div
+            className="w-64 h-44 flex flex-col items-center overflow-hidden relative"
+            style={{
+              backgroundImage: `url(${
+                categoryInfoMap.get(typeInfo!.category)!.image.src
+              })`,
+              backgroundSize: "cover",
+              backgroundRepeat: "no-repeat",
+              backgroundPositionX: "50%",
+            }}
+          >
+            <div
+              className="h-52 w-24 right-0 absolute"
+              style={{
+                backgroundImage: "linear-gradient(270deg,#ffffff,#ffffff00)",
+              }}
+            />
+          </div>
+          <div className="p-2 flex flex-col items-start bg-white">
+            <div className="w-full h-8 flex gap-2">
+              <div className="text-teal-600">ID: </div>
+              <div className="text-teal-600">{typeInfo.id}</div>
+            </div>
+            <div className="w-full h-8 zh flex items-end">
+              <div className="text-lg text-teal-600">{typeInfo.name}</div>
+            </div>
+            <div className="w-full h-6 zh flex items-end">
+              <div className="text-base text-teal-600">￥{typeInfo.price}</div>
+            </div>
+            <div className="w-full h-18 flex">
+              <div className="text-sm zh text-teal-700 text-ellipsis text-wrap">
+                {typeInfo.explain}
+              </div>
+            </div>
+          </div>
+          <div
+            className="flex-1 self-stretch max-w-60 rounded-r-xl"
+            style={{
+              backgroundImage: "linear-gradient(90deg,#ffffff,#99f6e4)",
+            }}
+          />
+        </div>
 
         <Card>
           <div className="flex flex-col gap-4">

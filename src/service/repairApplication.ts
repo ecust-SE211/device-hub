@@ -1,11 +1,16 @@
-import { post, commonResponse } from "@/libs";
-import { idRequest, statusRequest, rejectRequest } from "@/libs/type";
+import { post, CommonResponse, get } from "@/libs";
+import {
+  IdRequest,
+  StatusRequest,
+  RejectRequest,
+  ApplicationStatus,
+} from "@/libs/type";
 
 export interface RepairApplicationInfo extends Record<string, any> {
   id: string;
   mid: string;
   lid?: string;
-  status: number;
+  status: ApplicationStatus;
   manufacturer: string;
   cost: number;
   rtime: string;
@@ -15,7 +20,7 @@ export interface RepairApplicationInfo extends Record<string, any> {
   note?: string;
 }
 
-export type DeviceList = Array<idRequest>;
+export type DeviceList = Array<IdRequest>;
 
 export interface RepairApplicationRequest {
   mid: string;
@@ -31,7 +36,7 @@ interface updateInfo extends Record<string, any> {
   id: string;
   mid: string;
   lid?: string;
-  status: number;
+  status: ApplicationStatus;
   manufacturer: string;
   cost: number;
   rtime: string;
@@ -41,51 +46,56 @@ interface updateInfo extends Record<string, any> {
   note?: string;
   Devices: DeviceList;
 }
+export function getRepairApplications(): Promise<
+  CommonResponse<RepairApplicationInfoList>
+> {
+  return get("/repair/application/get");
+}
 
 export function findRepairApplicationsByMid(
-  data: idRequest
-): Promise<commonResponse<RepairApplicationInfoList>> {
+  data: IdRequest
+): Promise<CommonResponse<RepairApplicationInfoList>> {
   return post("/repair/application/findByMid", data);
 }
 
 export function findRepairApplicationsByLid(
-  data: idRequest
-): Promise<commonResponse<RepairApplicationInfoList>> {
+  data: IdRequest
+): Promise<CommonResponse<RepairApplicationInfoList>> {
   return post("/repair/application/findByLid", data);
 }
 
 export function findRepairApplicationsByStatus(
-  data: statusRequest
-): Promise<commonResponse<RepairApplicationInfoList>> {
+  data: StatusRequest
+): Promise<CommonResponse<RepairApplicationInfoList>> {
   return post("/repair/application/findByStatus", data);
 }
 
 export function appendRepairApplication(
   data: RepairApplicationRequest
-): Promise<commonResponse<undefined>> {
+): Promise<CommonResponse<undefined>> {
   return post("/repair/application/append", data);
 }
 
 export function approveRepairApplication(
-  data: idRequest
-): Promise<commonResponse<undefined>> {
+  data: IdRequest
+): Promise<CommonResponse<undefined>> {
   return post("/repair/application/approve", data);
 }
 
 export function rejectRepairApplication(
-  data: rejectRequest
-): Promise<commonResponse<undefined>> {
+  data: RejectRequest
+): Promise<CommonResponse<undefined>> {
   return post("/repair/application/reject", data);
 }
 
 export function finishRepairApplication(
-  data: idRequest
-): Promise<commonResponse<undefined>> {
+  data: IdRequest
+): Promise<CommonResponse<undefined>> {
   return post("/repair/application/finish", data);
 }
 
 export function updateRepairApplication(
   data: updateInfo
-): Promise<commonResponse<updateInfo>> {
+): Promise<CommonResponse<updateInfo>> {
   return post("/repair/application/update", data);
 }

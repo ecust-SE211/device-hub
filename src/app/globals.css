@@ -2,9 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 @font-face {
-
-  font-family: 'YeZi';
-  src: url('/YeZiGongChangTangYingHei-2.ttf');
+  font-family: "YeZi";
+  src: url("/YeZiGongChangTangYingHei-2.ttf");
 }
 
 :root {
@@ -20,9 +19,14 @@
     --background-end-rgb: 0, 0, 0;
   }
 }
-.zh{
-  font-family: 'YeZi';
+* {
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", "Times New Roman", Geneva, Verdana, sans-serif;
+  /* font-family: "Times New Roman", Times, serif; */
 }
+/* .zh{
+  font-family: 'YeZi';
+} */
 body {
   background-color: #f0fdfa;
 }
