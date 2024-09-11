@@ -136,7 +136,7 @@ export default function ApplicationPage(props: Props): ReactNode {
         { text: "Repair", value: 2 },
         { text: "Scrap", value: 3 },
       ],
-      onFilter: (value, record) => record.status === value,
+      onFilter: (value, record) => record.type === value,
       render(value) {
         if (value === ApplicationType.Purchase)
           return <Tag color="success">Purchase</Tag>;

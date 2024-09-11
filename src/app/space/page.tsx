@@ -1,5 +1,5 @@
 "use client";
-import { Descriptions, Modal } from "antd";
+import { Card, Descriptions, Modal, Statistic } from "antd";
 import { useRouter } from "next/navigation";
 import { ReactNode, useEffect, useRef, useState } from "react";
 import { LoadingPage, Title } from "@/components";
@@ -17,9 +17,15 @@ import {
   getUserType,
 } from "@/utils";
 import { ApplicationStatus, CommonResponse } from "@/libs";
+import {
+  AlertOutlined,
+  ClockCircleOutlined,
+  LikeOutlined,
+} from "@ant-design/icons";
 export default function HomePage(): ReactNode {
   const router = useRouter();
   const applicationCount = useRef(0);
+  const applicationFinishedCount = useRef(0);
   const applicationWaitingCount = useRef(0);
   const applicationUrgentCount = useRef(0);
   const [fetchError, setFetchError] = useState(false);
@@ -28,6 +34,8 @@ export default function HomePage(): ReactNode {
   const userType = getUserType();
   const isLeader = userType === "L";
 
+  const go = (href: string) => () => router.push(href);
+  const back = () => router.back();
   const fetchData = async () => {
     const fetchId = getId()!;
     setIsLoading(true);
@@ -38,7 +46,7 @@ export default function HomePage(): ReactNode {
     else if (userType === "M") findApplicationFunc = findApplicationsByMid;
     else {
       clearUserInfo();
-      router.back();
+      back();
       return;
     }
 
@@ -57,6 +65,7 @@ export default function HomePage(): ReactNode {
           applicationCount.current = res.data!.filter(
             (item) => item.lid === fetchId
           ).length;
+
           let rest = res.data!.filter(
             (item) => item.status === ApplicationStatus.Waiting
           );
@@ -64,6 +73,8 @@ export default function HomePage(): ReactNode {
           applicationUrgentCount.current = rest.filter(
             (item) => item.lid === fetchId
           ).length;
+          applicationFinishedCount.current =
+            applicationCount.current - applicationUrgentCount.current;
         } else {
           let rest = res.data!.filter((item) => item.mid === fetchId);
           applicationCount.current = rest.length;
@@ -72,6 +83,8 @@ export default function HomePage(): ReactNode {
           applicationUrgentCount.current = rest.filter(
             (item) => item.lid != undefined
           ).length;
+          applicationFinishedCount.current =
+            applicationCount.current - applicationWaitingCount.current;
         }
       }),
     ])
@@ -108,18 +121,71 @@ export default function HomePage(): ReactNode {
       </>
     );
   return (
-    <div className="pl-2 max-w-[40rem] rounded-xl flex flex-col bg-teal-200">
-      <div className="px-2 py-2 rounded-xl bg-white">
-        <Descriptions
+    <div className="flex flex-col gap-4 items-start">
+      <div className="-ml-2 pl-2 max-w-[40rem] rounded-xl flex flex-col bg-teal-400">
+        <Card
           title={
             <Title size={1.2} title="UserInfo" style={{ float: "left" }} />
           }
+          bordered={false}
         >
-          <Descriptions.Item label="ID">{getId()}</Descriptions.Item>
-          <Descriptions.Item label="UserName">{getName()}</Descriptions.Item>
-          <Descriptions.Item label="Telephone">{getTel()}</Descriptions.Item>
-          <Descriptions.Item label="Email">{getEmail()}</Descriptions.Item>
-        </Descriptions>
+          <Descriptions>
+            <Descriptions.Item label="ID">{getId()}</Descriptions.Item>
+            <Descriptions.Item label="UserName">{getName()}</Descriptions.Item>
+            <Descriptions.Item label="Telephone">{getTel()}</Descriptions.Item>
+            <Descriptions.Item label="Email">{getEmail()}</Descriptions.Item>
+          </Descriptions>
+        </Card>
+      </div>
+      <div
+        className="-ml-2 pl-2 max-w-[40rem] rounded-xl flex flex-col hover:bg-teal-200"
+        onClick={go("/space/application")}
+      >
+        <Card
+          hoverable
+          title={
+            <Title
+              size={1.2}
+              title="Application"
+              style={{ float: "left" }}
+              pointer
+            />
+          }
+          bordered={false}
+        >
+          <div className="flex gap-6">
+            <div
+              className="flex-col -m-2 p-2 items-center min-w-20 rounded-lg hover:bg-teal-100"
+              onClick={go("/space/application?my=true&finished=true")}
+            >
+              <Statistic
+                title="Finished"
+                value={`${applicationFinishedCount.current}/${applicationCount.current}`}
+                prefix={<LikeOutlined />}
+              />
+            </div>
+            <div
+              className="flex-col -m-2 p-2 items-center min-w-20 rounded-lg hover:bg-teal-100"
+              onClick={go("/space/application?my=true&processing=true")}
+            >
+              <Statistic
+                title="Processing"
+                value={applicationWaitingCount.current}
+                prefix={<ClockCircleOutlined />}
+              />
+            </div>
+            <div
+              className="flex-col -m-2 p-2 items-center min-w-20 rounded-lg hover:bg-teal-100"
+              onClick={go("/space/application?my=true&urgent=true")}
+            >
+              <Statistic
+                title="Urgent"
+                value={applicationUrgentCount.current}
+                prefix={<AlertOutlined />}
+              />
+            </div>
+          </div>
+        </Card>
       </div>
     </div>
   );
