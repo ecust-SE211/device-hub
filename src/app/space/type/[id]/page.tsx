@@ -20,7 +20,7 @@ interface Props {
     id?: string;
   };
 }
-export default function TypeListPage(props: Props): ReactNode {
+export default function TypePage(props: Props): ReactNode {
   const [fetchError, setFetchError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("Error");
   const [isLoading, setIsLoading] = useState(true);
@@ -99,7 +99,7 @@ export default function TypeListPage(props: Props): ReactNode {
         return (
           <span
             className="cursor-pointer"
-            onClick={go(`/dashboard/device/${value}`)}
+            onClick={go(`/space/device/${value}`)}
           >
             {value}
           </span>
@@ -137,7 +137,7 @@ export default function TypeListPage(props: Props): ReactNode {
               color="error"
               onClick={() =>
                 router.push(
-                  `/dashboard/application/scraped/${record.scrapApplicationId}`
+                  `/space/application/scraped/${record.scrapApplicationId}`
                 )
               }
             >
@@ -172,7 +172,10 @@ export default function TypeListPage(props: Props): ReactNode {
           title="FetchData Failed"
           open={fetchError}
           okText="Retry"
-          onOk={fetchData}
+          onOk={() => {
+            setFetchError(false);
+            fetchData();
+          }}
           cancelText="Back"
           onCancel={() => {
             router.back();

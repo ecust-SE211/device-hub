@@ -32,9 +32,10 @@ export default function UserInfoCard(): ReactNode {
         localStorage.setItem("tel", values.tel);
         localStorage.setItem("email", values.email);
 
-        router.push("/dashboard");
+        router.push("/space");
         setSubmitting(false);
         setEditing(false);
+        messageApi.success("Modified successfully!");
       })
       .catch((err) => {
         messageApi.error(`${err}`);
@@ -75,7 +76,7 @@ export default function UserInfoCard(): ReactNode {
           labelCol={{ span: 6 }}
           onFinish={submit}
         >
-          <FormItem name="id" label="Id">
+          <FormItem name="id" label="ID">
             <Input
               style={{ color: "#0d9488", fontSize: "0.75rem" }}
               // defaultValue={getId()}

@@ -8,7 +8,7 @@ export default function NavBar(): ReactNode {
   const router = useRouter();
   const pathname = usePathname();
   const pathSplit = pathname.split("/");
-  const dashboardActive = pathSplit.length === 2;
+  const spaceActive = pathSplit.length === 2;
   const deviceActive =
     pathSplit.length > 2 &&
     (pathSplit[2] === "category" ||
@@ -44,11 +44,11 @@ export default function NavBar(): ReactNode {
         size={1.5}
         useFavicon
         className={
-          dashboardActive
+          spaceActive
             ? "border-teal-400 border-2 border-solid rounded-md px-2"
             : "hover:bg-[#0001] rounded-md ml-2.5"
         }
-        onClick={dashboardActive ? undefined : () => router.push("/dashboard")}
+        onClick={spaceActive ? undefined : () => router.push("/space")}
       />
       {applicationActive && (
         <div className="flex items-center">
@@ -64,12 +64,10 @@ export default function NavBar(): ReactNode {
             : "hover:bg-[#0001] rounded-md"
         }
         onClick={
-          deviceActive
-            ? undefined
-            : () => router.push("/dashboard/category/C001")
+          deviceActive ? undefined : () => router.push("/space/category/C001")
         }
       />
-      {dashboardActive && (
+      {spaceActive && (
         <div className="flex items-center">
           <div className="h-5/6 w-0.5 bg-teal-400 " />
         </div>
@@ -85,7 +83,7 @@ export default function NavBar(): ReactNode {
         onClick={
           applicationActive
             ? undefined
-            : () => router.push("/dashboard/application")
+            : () => router.push("/space/application")
         }
       />
       <div className="flex-1"></div>

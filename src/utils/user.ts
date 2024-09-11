@@ -1,8 +1,18 @@
-const user: Record<string, string> = {};
+interface User extends Record<string, string | undefined> {
+  id?: string;
+  userType?: UserType;
+  name?: string;
+  email?: string;
+  tel?: string;
+}
+
+const user: User = {};
+type UserType = "M" | "L" | undefined;
 const clearUserInfo = () => {
   for (const key in user) {
     delete user[key];
   }
+  localStorage.removeItem("token");
 };
 const getId = () => {
   if (user.id) return user.id;
@@ -12,13 +22,14 @@ const getId = () => {
   }
   return id ?? undefined;
 };
-const getUserType = () => {
+const getUserType = (): UserType => {
   if (user.userType) return user.userType;
-  const userType = localStorage.getItem("userType");
-  if (userType) {
+  const userType = localStorage.getItem("userType") ?? undefined;
+  if (userType === "M" || userType === "L") {
     user.userType = userType;
   }
-  return userType ?? undefined;
+  if (userType) localStorage.removeItem("userType");
+  return undefined;
 };
 const getName = () => {
   if (user.name) return user.name;
@@ -45,7 +56,7 @@ const getTel = () => {
   return tel ?? undefined;
 };
 const isLogin = () => {
-  return !!localStorage.getItem("token");
+  return localStorage.getItem("token") != undefined;
 };
 export {
   clearUserInfo,

@@ -8,7 +8,7 @@ import UserInfoCard from "./components/UserInfoCard";
 import { isLogin } from "@/utils";
 import { useRouter } from "next/navigation";
 import { init, isInitialized } from "@/utils";
-function DashBoardLayout({ children }: React.PropsWithChildren) {
+function mainLayout({ children }: React.PropsWithChildren) {
   const [initError, setInitError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [hiddenUserInfo, setHiddenUserInfo] = useState(true);
@@ -32,6 +32,9 @@ function DashBoardLayout({ children }: React.PropsWithChildren) {
     }
   }, 200);
   useEffect(() => {
+    if (!isLogin()) {
+      router.push("/");
+    }
     handleResize();
     if (!isInitialized()) {
       init()
@@ -56,12 +59,6 @@ function DashBoardLayout({ children }: React.PropsWithChildren) {
     };
   });
 
-  if (!isLogin()) {
-    alert("You must login first.");
-    router.push("/");
-    // There will be a redirecting Page.
-    return <LoadingPage />;
-  }
   if (isLoading) {
     let retrying = false;
     const handleRetry = () => {
@@ -126,4 +123,4 @@ function DashBoardLayout({ children }: React.PropsWithChildren) {
   );
 }
 
-export default DashBoardLayout;
+export default mainLayout;

@@ -1,10 +1,10 @@
 "use client";
-import { Button, Card, Modal, Table, Tag } from "antd";
+import { Button, Card, Modal, Segmented, Table, Tag } from "antd";
 import type { TableProps } from "antd";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { ReactNode, useEffect, useRef, useState } from "react";
 import { LoadingPage, Title } from "@/components";
-import { categoryInfoMap } from "@/utils";
+import { categoryInfoMap, getId, getUserType } from "@/utils";
 import {
   DeviceInfo,
   DeviceInfoList,
@@ -14,7 +14,11 @@ import {
   TypeInfo,
 } from "@/service";
 import Search from "antd/es/input/Search";
-import { MenuOutlined, SelectOutlined } from "@ant-design/icons";
+import {
+  FileAddOutlined,
+  MenuOutlined,
+  SelectOutlined,
+} from "@ant-design/icons";
 import {
   ApplicationInfo,
   ApplicationInfoList,
@@ -26,11 +30,14 @@ import { ApplicationStatus } from "@/libs";
 
 interface Props {
   params: {
-    id?: string;
+    my?: boolean;
+    option?: string;
   };
 }
 interface ApplicationInfoForDisplay {
   id: string;
+  mid: string;
+  lid?: string;
   status: ApplicationStatus;
   cost: string;
   rtime: string;
@@ -38,24 +45,44 @@ interface ApplicationInfoForDisplay {
   // brief: string;
   // note: string;
   type: ApplicationType;
+  urgent: boolean;
 }
-type ApplicationInfoForDisplayList = ApplicationInfoForDisplay[];
-export default function ApplicationPage(props: Props): ReactNode {
+type ApplicationInfoForDisplayList = Array<ApplicationInfoForDisplay>;
+
+enum OptionType {
+  All = 0,
+  Processing = 1,
+  Finished = 2,
+  Urgent = 3,
+}
+
+export default function ApplicationListPage(props: Props): ReactNode {
   const [fetchError, setFetchError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("Error");
   const [isLoading, setIsLoading] = useState(true);
+  const [applicationDataMy, setApplicationDataMy] =
+    useState<ApplicationInfoForDisplayList>([]);
   const [applicationData, setApplicationData] =
     useState<ApplicationInfoForDisplayList>([]);
   const applicationList = useRef<ApplicationInfoForDisplayList>([]);
   const router = useRouter();
-  const { id } = props.params;
+  const searchParams = useSearchParams();
+  const my = searchParams.get("my");
+  const option = searchParams.get("option");
+  const [isMy, setIsMy] = useState(!!my);
+  let tempOptionType: OptionType;
+  if (option == "processing") tempOptionType = OptionType.Processing;
+  else if (option == "finished") tempOptionType = OptionType.Finished;
+  else if (option == "urgent") tempOptionType = OptionType.Urgent;
+  else tempOptionType = OptionType.All;
+  const [optionType, setOptionType] = useState<OptionType>(tempOptionType);
 
   const go = (href: string) => () => router.push(href);
   const back = () => router.back();
+  const uid = getId();
 
   const fetchData = async () => {
     setIsLoading(true);
-    const fetchId = id!;
     return getApplications()
       .then((res) => {
         const { code, msg } = res;
@@ -68,6 +95,8 @@ export default function ApplicationPage(props: Props): ReactNode {
         const processedData = res.data!.map((application, index) => {
           const {
             id,
+            mid,
+            lid,
             status,
             cost,
             rtime,
@@ -76,17 +105,27 @@ export default function ApplicationPage(props: Props): ReactNode {
             // note,
             type,
           } = application;
+          const urgent = !!lid && status === ApplicationStatus.Waiting;
           return {
             id,
+            mid,
+            lid,
             status,
             cost: `${cost}`,
             rtime,
             ftime,
             type,
+            urgent,
           };
         });
         applicationList.current = processedData;
+
         setApplicationData(processedData);
+        setApplicationDataMy(
+          getUserType() === "M"
+            ? processedData.filter((item) => item.mid === uid)
+            : processedData.filter((item) => item.lid === uid)
+        );
         setIsLoading(false);
       })
       .catch((err) => {
@@ -97,10 +136,18 @@ export default function ApplicationPage(props: Props): ReactNode {
 
   const queryData = (query: string) => {
     const applicationData = applicationList.current.filter((item) => {
-      return `${item.id}${item.rtime}${item.ftime}`.includes(query);
+      return `${item.id}${item.mid}${item.lid}${item.rtime}${item.ftime}`.includes(
+        query
+      );
     });
     setApplicationData(applicationData);
+    setApplicationDataMy(
+      getUserType() === "M"
+        ? applicationData.filter((item) => item.mid === uid)
+        : applicationData.filter((item) => item.lid === uid)
+    );
   };
+
   useEffect(() => {
     fetchData();
     // 使用空列表使方法只允许一次
@@ -108,7 +155,7 @@ export default function ApplicationPage(props: Props): ReactNode {
   }, []);
   const columns: TableProps<ApplicationInfoForDisplay>["columns"] = [
     {
-      title: "ApplicationInfo",
+      title: "ApplicationID",
       dataIndex: "id",
       key: "id",
       render(value, record) {
@@ -128,6 +175,11 @@ export default function ApplicationPage(props: Props): ReactNode {
       },
     },
     {
+      title: "ManagerID",
+      dataIndex: "mid",
+      key: "mid",
+    },
+    {
       title: "Type",
       dataIndex: "type",
       key: "type",
@@ -136,7 +188,7 @@ export default function ApplicationPage(props: Props): ReactNode {
         { text: "Repair", value: 2 },
         { text: "Scrap", value: 3 },
       ],
-      onFilter: (value, record) => record.status === value,
+      onFilter: (value, record) => record.type === value,
       render(value) {
         if (value === ApplicationType.Purchase)
           return <Tag color="success">Purchase</Tag>;
@@ -169,6 +221,34 @@ export default function ApplicationPage(props: Props): ReactNode {
           return <Tag color="error">Canceled</Tag>;
         return <Tag color="default">Unknown</Tag>;
       },
+      filteredValue: (function () {
+        if (optionType == OptionType.Finished) return [3];
+        if (optionType == OptionType.Processing) return [1, 2];
+        return undefined;
+      })(),
+    },
+    {
+      title: "LeaderID",
+      dataIndex: "lid",
+      key: "lid",
+    },
+    {
+      title: "Urgent",
+      dataIndex: "urgent",
+      key: "urgent",
+      filters: [
+        { text: "urgent", value: true },
+        { text: "normal", value: false },
+      ],
+      onFilter: (value, record) => record.urgent === value,
+      filteredValue: optionType == OptionType.Urgent ? [true] : undefined,
+      render: (value) => {
+        return value ? (
+          <Tag color="error">Urgent</Tag>
+        ) : (
+          <Tag color="success">Normal</Tag>
+        );
+      },
     },
     {
       title: "Cost",
@@ -200,7 +280,10 @@ export default function ApplicationPage(props: Props): ReactNode {
           title="FetchData Failed"
           open={fetchError}
           okText="Retry"
-          onOk={fetchData}
+          onOk={() => {
+            setFetchError(false);
+            fetchData();
+          }}
           cancelText="Back"
           onCancel={() => {
             router.back();
@@ -213,19 +296,60 @@ export default function ApplicationPage(props: Props): ReactNode {
     );
   return (
     <div className="flex w-full items-start gap-4">
-      <div className="flex flex-col flex-wrap flex-1 gap-4">
-        <Card />
-
+      <div className="flex flex-col flex-1 gap-4">
+        <div className="bg-white rounded-xl p-4 border-teal-200 border-solid border-r-4 overflow-hidden">
+          <div className="flex flex-col items-start gap-2">
+            <div className="flex self-stretch gap-2">
+              <Segmented
+                defaultValue={isMy}
+                options={[
+                  { label: "All", value: false },
+                  { label: "My", value: true },
+                ]}
+                onChange={(value) => setIsMy(value)}
+              />
+              <Segmented
+                defaultValue={optionType}
+                options={[
+                  { label: "All", value: OptionType.All },
+                  { label: "Processing", value: OptionType.Processing },
+                  { label: "Finished", value: OptionType.Finished },
+                  { label: "Urgent", value: OptionType.Urgent },
+                ]}
+                onChange={(value) => setOptionType(value)}
+              />
+              <div className="flex-1"></div>
+              {getUserType() == "M" && (
+                <Button
+                  type="default"
+                  icon={<FileAddOutlined />}
+                  onClick={go("/space/application/purchase")}
+                >
+                  <span className="font-semibold">New Application</span>
+                </Button>
+              )}
+            </div>
+            <Search
+              className="max-w-[40rem]"
+              allowClear
+              onSearch={(query) => queryData(query)}
+              enterButton={<span className="font-semibold">Query</span>}
+            />
+          </div>
+        </div>
         <Card>
           <div className="flex flex-col gap-4">
-            <Search
+            {/* <Search
               className="max-w-[40rem]"
               size="large"
               allowClear
               onSearch={(query) => queryData(query)}
               enterButton={<span className="font-semibold">Query</span>}
+            /> */}
+            <Table
+              columns={columns}
+              dataSource={isMy ? applicationDataMy : applicationData}
             />
-            <Table columns={columns} dataSource={applicationData} />
           </div>
         </Card>
       </div>

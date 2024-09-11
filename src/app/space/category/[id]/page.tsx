@@ -23,9 +23,9 @@ export default function TypeListPage(props: Props): ReactNode {
   const { id: cid } = props.params;
   if (cid) {
     try {
-      if (!categoryInfoMap.has(cid)) router.replace("/dashboard/category/C001");
+      if (!categoryInfoMap.has(cid)) router.replace("/space/category/C001");
     } catch (error) {
-      router.replace("/dashboard/category/C001");
+      router.replace("/space/category/C001");
     }
   }
   // const temp = parseInt(params.category);
@@ -80,7 +80,7 @@ export default function TypeListPage(props: Props): ReactNode {
             key == cid
               ? undefined
               : () => {
-                  router.replace(`/dashboard/category/${key}`);
+                  router.replace(`/space/category/${key}`);
                 }
           }
         >
@@ -98,7 +98,10 @@ export default function TypeListPage(props: Props): ReactNode {
             title="FetchData Failed"
             open={fetchError}
             okText="Retry"
-            onOk={fetchData}
+            onOk={() => {
+              setFetchError(false);
+              fetchData();
+            }}
             cancelText="Back"
             onCancel={() => {
               router.back();
@@ -114,7 +117,7 @@ export default function TypeListPage(props: Props): ReactNode {
         key={index}
         className="w-40 pb-2 flex flex-col bg-white rounded-xl border-t-4 border-teal-200 cursor-pointer transition-shadow hover:shadow-md"
         onClick={() => {
-          router.push(`/dashboard/type/${typeInfo.id}`);
+          router.push(`/space/type/${typeInfo.id}`);
         }}
       >
         <div className="flex">

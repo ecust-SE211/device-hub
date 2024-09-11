@@ -32,7 +32,7 @@ interface Props {
     id?: string;
   };
 }
-export default function TypeListPage(props: Props): ReactNode {
+export default function DevicePage(props: Props): ReactNode {
   const [fetchError, setFetchError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("Error");
   const [isLoading, setIsLoading] = useState(true);
@@ -172,7 +172,10 @@ export default function TypeListPage(props: Props): ReactNode {
           title="FetchData Failed"
           open={fetchError}
           okText="Retry"
-          onOk={fetchData}
+          onOk={() => {
+            setFetchError(false);
+            fetchData();
+          }}
           cancelText="Back"
           onCancel={() => {
             router.back();
@@ -215,7 +218,7 @@ export default function TypeListPage(props: Props): ReactNode {
               hoverable
               title={<Title size={1} title="Type Info" pointer />}
               className="w-52"
-              onClick={go(`/dashboard/type/${deviceInfo.tid}`)}
+              onClick={go(`/space/type/${deviceInfo.tid}`)}
             >
               <Meta
                 title={deviceInfo.tid}
@@ -230,7 +233,7 @@ export default function TypeListPage(props: Props): ReactNode {
               title={<Title size={1} title="Purchase Info" pointer />}
               className="w-52"
               onClick={go(
-                `/dashboard/application/purchase/${deviceInfo.purchaseApplicationId}`
+                `/space/application/purchase/${deviceInfo.purchaseApplicationId}`
               )}
             >
               <Meta
@@ -246,7 +249,7 @@ export default function TypeListPage(props: Props): ReactNode {
                 title={<Title size={1} title="ScrapData" pointer />}
                 className="w-52"
                 onClick={go(
-                  `/dashboard/application/Scrap/${deviceInfo.scrapApplicationId}`
+                  `/space/application/Scrap/${deviceInfo.scrapApplicationId}`
                 )}
               >
                 <Meta
