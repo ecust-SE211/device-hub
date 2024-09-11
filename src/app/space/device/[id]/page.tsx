@@ -215,7 +215,7 @@ export default function TypeListPage(props: Props): ReactNode {
               hoverable
               title={<Title size={1} title="Type Info" pointer />}
               className="w-52"
-              onClick={go(`/dashboard/type/${deviceInfo.tid}`)}
+              onClick={go(`/space/type/${deviceInfo.tid}`)}
             >
               <Meta
                 title={deviceInfo.tid}
@@ -230,7 +230,7 @@ export default function TypeListPage(props: Props): ReactNode {
               title={<Title size={1} title="Purchase Info" pointer />}
               className="w-52"
               onClick={go(
-                `/dashboard/application/purchase/${deviceInfo.purchaseApplicationId}`
+                `/space/application/purchase/${deviceInfo.purchaseApplicationId}`
               )}
             >
               <Meta
@@ -246,7 +246,7 @@ export default function TypeListPage(props: Props): ReactNode {
                 title={<Title size={1} title="ScrapData" pointer />}
                 className="w-52"
                 onClick={go(
-                  `/dashboard/application/Scrap/${deviceInfo.scrapApplicationId}`
+                  `/space/application/Scrap/${deviceInfo.scrapApplicationId}`
                 )}
               >
                 <Meta

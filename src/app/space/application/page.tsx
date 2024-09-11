@@ -39,7 +39,7 @@ interface ApplicationInfoForDisplay {
   // note: string;
   type: ApplicationType;
 }
-type ApplicationInfoForDisplayList = ApplicationInfoForDisplay[];
+type ApplicationInfoForDisplayList = Array<ApplicationInfoForDisplay>;
 export default function ApplicationPage(props: Props): ReactNode {
   const [fetchError, setFetchError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("Error");

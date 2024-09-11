@@ -99,7 +99,7 @@ export default function TypeListPage(props: Props): ReactNode {
         return (
           <span
             className="cursor-pointer"
-            onClick={go(`/dashboard/device/${value}`)}
+            onClick={go(`/space/device/${value}`)}
           >
             {value}
           </span>
@@ -137,7 +137,7 @@ export default function TypeListPage(props: Props): ReactNode {
               color="error"
               onClick={() =>
                 router.push(
-                  `/dashboard/application/scraped/${record.scrapApplicationId}`
+                  `/space/application/scraped/${record.scrapApplicationId}`
                 )
               }
             >

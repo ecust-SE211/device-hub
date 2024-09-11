@@ -31,7 +31,7 @@ export default function ManagerLogin(): ReactNode {
         localStorage.setItem("token", token);
         localStorage.setItem("userType", "M");
 
-        router.push("/dashboard");
+        router.push("/space");
         setSubmitting(false);
       })
       .catch((err) => {

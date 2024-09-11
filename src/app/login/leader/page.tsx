@@ -31,7 +31,7 @@ export default function LeaderLogin(): ReactNode {
         localStorage.setItem("token", token);
         localStorage.setItem("userType", "L");
 
-        router.push("/dashboard");
+        router.push("/space");
         setSubmitting(false);
       })
       .catch((err) => {

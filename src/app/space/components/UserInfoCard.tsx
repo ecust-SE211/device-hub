@@ -32,9 +32,10 @@ export default function UserInfoCard(): ReactNode {
         localStorage.setItem("tel", values.tel);
         localStorage.setItem("email", values.email);
 
-        router.push("/dashboard");
+        router.push("/space");
         setSubmitting(false);
         setEditing(false);
+        messageApi.success("Modified successfully!");
       })
       .catch((err) => {
         messageApi.error(`${err}`);
