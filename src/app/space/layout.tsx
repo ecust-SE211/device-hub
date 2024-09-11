@@ -33,7 +33,6 @@ function mainLayout({ children }: React.PropsWithChildren) {
   }, 200);
   useEffect(() => {
     if (!isLogin()) {
-      alert("You must login first.");
       router.push("/");
     }
     handleResize();

@@ -1,18 +1,12 @@
 "use client";
-import { FlexCenter, LoadingPage, Title } from "@/components";
-import {
-  AppstoreAddOutlined,
-  LockOutlined,
-  MinusOutlined,
-  UserOutlined,
-} from "@ant-design/icons";
+import { LoadingPage, Title } from "@/components";
+import { AppstoreAddOutlined, MinusOutlined } from "@ant-design/icons";
 import { Button, Card, Form, Input, message, Modal, Radio, Select } from "antd";
 import FormItem from "antd/es/form/FormItem";
-import { ReactNode, useEffect, useRef, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import {
   appendPurchaseApplication,
   getTypes,
-  leaderLogin,
   TypeListResponse,
 } from "@/service";
 import { useRouter } from "next/navigation";
@@ -28,7 +22,6 @@ export default function NewPurchaseApplication(): ReactNode {
   const [isLoading, setIsLoading] = useState(true);
   const [types, setTypes] = useState<TypeListResponse>([]);
   const [typePrice, setTypePrice] = useState<Map<string, number>>(new Map());
-  const [cost, setCost] = useState<number>(0);
   const [form] = Form.useForm();
   const go = (href: string) => () => router.push(href);
   const back = () => router.back();
@@ -46,8 +39,8 @@ export default function NewPurchaseApplication(): ReactNode {
         }
 
         router.push(`/space/application/purchase/${res.data!.id}`);
-        return;
         setSubmitting(false);
+        return;
       })
       .catch((err) => {
         messageApi.error(`${err}`);
@@ -67,7 +60,6 @@ export default function NewPurchaseApplication(): ReactNode {
         setTypes(res.data!);
         let typePriceMap = new Map();
         res.data!.forEach((type) => typePriceMap.set(type.id, type.price));
-        console.log(typePriceMap);
         setTypePrice(typePriceMap);
         typePrice;
         setIsLoading(false);
@@ -77,20 +69,18 @@ export default function NewPurchaseApplication(): ReactNode {
         setFetchError(true);
       });
   };
-  const handleGetTotal = () => {
+  const handleGetCost = () => {
     const types = form.getFieldValue(["types"]);
-    console.log(types);
     let sum = 0;
     for (const type of types) {
       if (type === undefined || type.id === undefined || type.num === undefined)
         continue;
-      console.log(typePrice, type.id, typePrice.get(type.id)!);
       sum += parseFloat(type.num) * typePrice.get(type.id)!;
     }
-    console.log(sum);
-    form.setFieldValue("total", sum);
+    form.setFieldValue("cost", sum);
   };
   useEffect(() => {
+    if (getUserType() !== "M") back();
     void fetchData();
   }, []);
   if (isLoading)
@@ -100,7 +90,10 @@ export default function NewPurchaseApplication(): ReactNode {
           title="FetchData Failed"
           open={fetchError}
           okText="Retry"
-          onOk={fetchData}
+          onOk={() => {
+            setFetchError(false);
+            fetchData();
+          }}
           cancelText="Back"
           onCancel={() => {
             router.back();
@@ -146,7 +139,7 @@ export default function NewPurchaseApplication(): ReactNode {
           labelCol={{ span: 4 }}
           initialValues={{
             mid: getId(),
-            cost: cost,
+            cost: 0,
           }}
           form={form}
           onFinish={submit}
@@ -214,7 +207,7 @@ export default function NewPurchaseApplication(): ReactNode {
                               options={types.map((item) => {
                                 return { label: item.id, value: item.id };
                               })}
-                              onChange={handleGetTotal}
+                              onChange={handleGetCost}
                             />
                           </FormItem>
                           <FormItem name={[field.name, "id"]}>
@@ -225,7 +218,7 @@ export default function NewPurchaseApplication(): ReactNode {
                               options={types.map((item) => {
                                 return { label: item.name, value: item.id };
                               })}
-                              onChange={handleGetTotal}
+                              onChange={handleGetCost}
                             />
                           </FormItem>
                           <FormItem name={[field.name, "id"]}>
@@ -258,7 +251,7 @@ export default function NewPurchaseApplication(): ReactNode {
                             <Input
                               type="number"
                               placeholder="Input Number"
-                              onChange={handleGetTotal}
+                              onChange={handleGetCost}
                             />
                           </FormItem>
                         </div>
@@ -283,7 +276,7 @@ export default function NewPurchaseApplication(): ReactNode {
               )}
             </FormList>
           </FormItem>
-          <FormItem name="brief" label="brief">
+          <FormItem name="brief" label="brief" required>
             <TextArea autoSize={true} />
           </FormItem>
           <FormItem wrapperCol={{ offset: 4 }}>

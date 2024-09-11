@@ -280,7 +280,10 @@ export default function ApplicationListPage(props: Props): ReactNode {
           title="FetchData Failed"
           open={fetchError}
           okText="Retry"
-          onOk={fetchData}
+          onOk={() => {
+            setFetchError(false);
+            fetchData();
+          }}
           cancelText="Back"
           onCancel={() => {
             router.back();
