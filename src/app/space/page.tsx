@@ -122,7 +122,7 @@ export default function HomePage(): ReactNode {
     );
   return (
     <div className="flex flex-col gap-4 items-start">
-      <div className="-ml-2 pl-2 max-w-[40rem] rounded-xl flex flex-col bg-teal-400">
+      <div className="-ml-2 px-2 max-w-[40rem] rounded-xl flex flex-col bg-teal-200">
         <Card
           title={
             <Title size={1.2} title="UserInfo" style={{ float: "left" }} />
@@ -137,10 +137,7 @@ export default function HomePage(): ReactNode {
           </Descriptions>
         </Card>
       </div>
-      <div
-        className="-ml-2 pl-2 max-w-[40rem] rounded-xl flex flex-col hover:bg-teal-200"
-        onClick={go("/space/application")}
-      >
+      <div className="-ml-2 pl-2 max-w-[40rem] rounded-xl flex flex-col hover:bg-teal-200">
         <Card
           hoverable
           title={
@@ -148,7 +145,7 @@ export default function HomePage(): ReactNode {
               size={1.2}
               title="Application"
               style={{ float: "left" }}
-              pointer
+              onClick={go("/space/application?my=true")}
             />
           }
           bordered={false}
@@ -156,7 +153,7 @@ export default function HomePage(): ReactNode {
           <div className="flex gap-6">
             <div
               className="flex-col -m-2 p-2 items-center min-w-20 rounded-lg hover:bg-teal-100"
-              onClick={go("/space/application?my=true&finished=true")}
+              onClick={go("/space/application?my=true&option=finished")}
             >
               <Statistic
                 title="Finished"
@@ -166,7 +163,7 @@ export default function HomePage(): ReactNode {
             </div>
             <div
               className="flex-col -m-2 p-2 items-center min-w-20 rounded-lg hover:bg-teal-100"
-              onClick={go("/space/application?my=true&processing=true")}
+              onClick={go("/space/application?my=true&option=processing")}
             >
               <Statistic
                 title="Processing"
@@ -176,7 +173,7 @@ export default function HomePage(): ReactNode {
             </div>
             <div
               className="flex-col -m-2 p-2 items-center min-w-20 rounded-lg hover:bg-teal-100"
-              onClick={go("/space/application?my=true&urgent=true")}
+              onClick={go("/space/application?my=true&option=urgent")}
             >
               <Statistic
                 title="Urgent"

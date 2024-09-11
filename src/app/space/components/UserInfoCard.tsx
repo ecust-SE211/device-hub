@@ -76,7 +76,7 @@ export default function UserInfoCard(): ReactNode {
           labelCol={{ span: 6 }}
           onFinish={submit}
         >
-          <FormItem name="id" label="Id">
+          <FormItem name="id" label="ID">
             <Input
               style={{ color: "#0d9488", fontSize: "0.75rem" }}
               // defaultValue={getId()}

@@ -71,7 +71,7 @@ export function appendScrapApplication(
 
 export function approveScrapApplication(
   data: IdRequest
-): Promise<CommonResponse<undefined>> {
+): Promise<CommonResponse<IdRequest>> {
   return post("/scrap/application/approve", data);
 }
 

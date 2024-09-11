@@ -75,7 +75,7 @@ export function findPurchaseApplicationsByStatus(
 
 export function appendPurchaseApplication(
   data: PurchaseApplicationRequest
-): Promise<CommonResponse<undefined>> {
+): Promise<CommonResponse<IdRequest>> {
   return post("/purchase/application/append", data);
 }
 
@@ -101,4 +101,14 @@ export function updatePurchaseApplication(
   data: updateInfo
 ): Promise<CommonResponse<updateInfo>> {
   return post("/purchase/application/update", data);
+}
+
+export type TypeListResponse = Array<{
+  id: string;
+  name: string;
+  price: number;
+}>;
+
+export function getTypes(): Promise<CommonResponse<TypeListResponse>> {
+  return get("/type/getTypes");
 }

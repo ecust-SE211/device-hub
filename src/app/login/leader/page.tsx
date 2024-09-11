@@ -42,23 +42,9 @@ export default function LeaderLogin(): ReactNode {
   return (
     <FlexCenter>
       {submitting && <LoadingPage cover />}
-      <Card
-        title={
-          <Title
-            size={1.5}
-            style={{ minWidth: "300px" }}
-            title="Login As Leader"
-            returnButton
-          />
-        }
-      >
+      <Card title={<Title size={1.5} title="Login As Leader" returnButton />}>
         {contextHolder}
-        <Form
-          name="login"
-          initialValues={{ remember: true }}
-          style={{ maxWidth: 360 }}
-          onFinish={submit}
-        >
+        <Form name="login" style={{ maxWidth: 360 }} onFinish={submit}>
           <FormItem
             name="id"
             rules={[{ required: true, message: "Please input current id!" }]}

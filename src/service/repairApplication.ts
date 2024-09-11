@@ -72,7 +72,7 @@ export function findRepairApplicationsByStatus(
 
 export function appendRepairApplication(
   data: RepairApplicationRequest
-): Promise<CommonResponse<undefined>> {
+): Promise<CommonResponse<IdRequest>> {
   return post("/repair/application/append", data);
 }
 

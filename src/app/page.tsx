@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { ReactNode, useEffect } from "react";
 import { Title, FlexCenter } from "@/components";
 import { isLogin } from "@/utils";
-export default function HomePage(): ReactNode {
+export default function IndexPage(): ReactNode {
   const router = useRouter();
   useEffect(() => {
     if (isLogin()) router.push("/space");

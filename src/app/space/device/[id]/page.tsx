@@ -32,7 +32,7 @@ interface Props {
     id?: string;
   };
 }
-export default function TypeListPage(props: Props): ReactNode {
+export default function DevicePage(props: Props): ReactNode {
   const [fetchError, setFetchError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("Error");
   const [isLoading, setIsLoading] = useState(true);
