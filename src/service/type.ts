@@ -4,7 +4,7 @@ import { IdRequest } from "@/libs/type";
 export interface TypeInfo {
   id: string;
   name: string;
-  price: string;
+  price: number;
   category: string;
   explain?: string;
 }

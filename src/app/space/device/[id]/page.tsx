@@ -40,6 +40,7 @@ export default function DevicePage(props: Props): ReactNode {
     id: "",
     tid: "",
     status: 1,
+    manufacter: "",
     purchaseApplicationId: "",
     scrapApplicationId: "",
     storageTime: "",
@@ -92,8 +93,6 @@ export default function DevicePage(props: Props): ReactNode {
   };
   useEffect(() => {
     fetchData();
-    // 使用空列表使方法只允许一次
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   /** 
    *   id: string;

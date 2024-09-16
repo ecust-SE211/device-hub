@@ -87,8 +87,6 @@ export default function TypePage(props: Props): ReactNode {
   };
   useEffect(() => {
     fetchData();
-    // 使用空列表使方法只允许一次
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const columns: TableProps<DeviceInfo>["columns"] = [
     {

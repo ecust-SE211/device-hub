@@ -98,8 +98,6 @@ export default function HomePage(): ReactNode {
   };
   useEffect(() => {
     fetchData();
-    // 使用空列表使方法只允许一次
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (isLoading)

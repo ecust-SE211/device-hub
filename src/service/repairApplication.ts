@@ -58,10 +58,10 @@ export function findRepairApplicationsByMid(
   return post("/repair/application/findByMid", data);
 }
 
-export function findRepairApplicationsByLid(
+export function findRepairApplicationsByRid(
   data: IdRequest
-): Promise<CommonResponse<RepairApplicationInfoList>> {
-  return post("/repair/application/findByLid", data);
+): Promise<CommonResponse<RepairApplicationInfo>> {
+  return post("/repair/application/findByRid", data);
 }
 
 export function findRepairApplicationsByStatus(

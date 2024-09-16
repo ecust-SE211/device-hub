@@ -57,6 +57,12 @@ export function findScrapApplicationsByLid(
   return post("/scrap/application/findByLid", data);
 }
 
+export function findScrapApplicationsBySid(
+  data: IdRequest
+): Promise<CommonResponse<ScrapApplicationInfo>> {
+  return post("/scrap/application/findBySid", data);
+}
+
 export function findScrapApplicationsByStatus(
   data: StatusRequest
 ): Promise<CommonResponse<ScrapApplicationInfoList>> {
