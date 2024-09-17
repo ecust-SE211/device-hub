@@ -27,7 +27,7 @@ export interface RepairApplicationRequest {
   brief: string;
   manufacturer: string;
   cost: number;
-  Devices: DeviceList;
+  devices: DeviceList;
 }
 
 export type RepairApplicationInfoList = Array<RepairApplicationInfo>;

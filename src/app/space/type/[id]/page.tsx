@@ -146,9 +146,9 @@ export default function TypePage(props: Props): ReactNode {
       },
     },
     {
-      title: "Manufacter",
+      title: "Manufacturer",
       dataIndex: "manufacter",
-      key: "manufacter",
+      key: "manufacturer",
     },
     {
       title: "Note",

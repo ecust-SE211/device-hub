@@ -1,4 +1,4 @@
-import { post, CommonResponse } from "@/libs";
+import { post, CommonResponse, get } from "@/libs";
 import {
   DeviceStatus,
   IdPageRequest,
@@ -105,4 +105,8 @@ export async function appendDevices(
   data: DeviceRequest & { num: number }
 ): Promise<CommonResponse<undefined>> {
   return post("/device/appendDevices", data);
+}
+
+export async function getDeviceIds(): Promise<CommonResponse<Array<string>>> {
+  return get("/device/getDeviceIds");
 }

@@ -115,7 +115,7 @@ export default function DevicePage(props: Props): ReactNode {
       render: (value) => (
         <span
           className="cursor-pointer"
-          onClick={go(`/application/repair/${value}`)}
+          onClick={go(`/space/application/repair/${value}`)}
         >
           {value}
         </span>

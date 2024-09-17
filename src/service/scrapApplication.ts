@@ -22,7 +22,7 @@ export interface ScrapApplicationInfo extends Record<string, any> {
 export interface ScrapApplicationRequest {
   mid: string;
   brief: string;
-  Devices: DeviceList;
+  devices: DeviceList;
 }
 
 interface updateInfo extends Record<string, any> {
@@ -35,7 +35,7 @@ interface updateInfo extends Record<string, any> {
   ftime?: string;
   brief: string;
   note?: string;
-  Devices: DeviceList;
+  devices: DeviceList;
 }
 
 export type ScrapApplicationInfoList = Array<ScrapApplicationInfo>;

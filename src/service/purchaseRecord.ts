@@ -27,5 +27,5 @@ export type PurchaseRecordList = Array<PurchaseRecord>;
 export function findPurchaseRecordListByPid(
   data: IdRequest
 ): Promise<CommonResponse<PurchaseRecordList>> {
-  return post("/type/findTypesByPid", data);
+  return post("/purchase/record/findTypesByPid", data);
 }
