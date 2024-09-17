@@ -42,8 +42,6 @@ interface ApplicationInfoForDisplay {
   cost: string;
   rtime: string;
   ftime: string;
-  // brief: string;
-  // note: string;
   type: ApplicationType;
   urgent: boolean;
 }
@@ -101,8 +99,6 @@ export default function ApplicationListPage(props: Props): ReactNode {
             cost,
             rtime,
             ftime = "",
-            // brief,
-            // note,
             type,
           } = application;
           const urgent = !!lid && status === ApplicationStatus.Waiting;

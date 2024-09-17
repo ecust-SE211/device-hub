@@ -202,7 +202,7 @@ export default function NewPurchaseApplication(): ReactNode {
                           >
                             <Select
                               showSearch
-                              placeholder="Select TypeName"
+                              placeholder="Select TypeID"
                               optionFilterProp="label"
                               options={types.map((item) => {
                                 return { label: item.id, value: item.id };
@@ -276,7 +276,17 @@ export default function NewPurchaseApplication(): ReactNode {
               )}
             </FormList>
           </FormItem>
-          <FormItem name="brief" label="brief" required>
+          <FormItem
+            name="brief"
+            label="brief"
+            rules={[
+              {
+                required: true,
+                message: "Please input Brief!",
+              },
+            ]}
+            required
+          >
             <TextArea autoSize={true} />
           </FormItem>
           <FormItem wrapperCol={{ offset: 6 }}>

@@ -13,7 +13,7 @@ import {
 import type { TableProps } from "antd";
 import { useRouter } from "next/navigation";
 import { ReactNode, useEffect, useState } from "react";
-import { LoadingPage, Title } from "@/components";
+import { CancelApplicationDialog, LoadingPage, Title } from "@/components";
 import { getUserType } from "@/utils";
 import {
   approveScrapApplication,
@@ -22,6 +22,7 @@ import {
   findDevicesBySid,
   findScrapApplicationsBySid,
   finishScrapApplication,
+  rejectScrapApplication,
   ScrapApplicationInfo,
 } from "@/service";
 import { ApplicationStatus } from "@/libs";
@@ -36,8 +37,9 @@ export default function ScrapApplicationPage(props: Props): ReactNode {
   const [fetchError, setFetchError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("Error");
   const [isLoading, setIsLoading] = useState(true);
+  const [isCanceling, setIsCanceling] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
-  const [rAInfo, setRAInfo] = useState<ScrapApplicationInfo>({
+  const [sAInfo, setSAInfo] = useState<ScrapApplicationInfo>({
     id: "",
     mid: "",
     lid: undefined,
@@ -104,11 +106,20 @@ export default function ScrapApplicationPage(props: Props): ReactNode {
       });
   };
   const renderCancel = () => {
-    if (rAInfo.status < 3) return <Button>Cancel</Button>;
+    if (sAInfo.status < 3)
+      return (
+        <Button
+          onClick={() => {
+            setIsCanceling(true);
+          }}
+        >
+          Cancel
+        </Button>
+      );
   };
   const renderButton = () => {
     if (isLeader) {
-      if (rAInfo.status === ApplicationStatus.Waiting)
+      if (sAInfo.status === ApplicationStatus.Waiting)
         return (
           <>
             <Button type="primary" onClick={approve}>
@@ -126,8 +137,8 @@ export default function ScrapApplicationPage(props: Props): ReactNode {
         </>
       );
     }
-    if (rAInfo.status > 2) return;
-    if (rAInfo.status == 1)
+    if (sAInfo.status > 2) return;
+    if (sAInfo.status == 1)
       return (
         <>
           <Button type="primary" disabled>
@@ -159,7 +170,7 @@ export default function ScrapApplicationPage(props: Props): ReactNode {
           setFetchError(true);
           return;
         }
-        setRAInfo(res.data!);
+        setSAInfo(res.data!);
       }),
       findDevicesBySid({ id: fetchId }).then((res) => {
         const { code, msg } = res;
@@ -283,6 +294,13 @@ export default function ScrapApplicationPage(props: Props): ReactNode {
   return (
     <div className="flex flex-col items-center">
       {contextHolder}
+      <CancelApplicationDialog
+        fetchDataFunc={fetchData}
+        cancelFunc={rejectScrapApplication}
+        onClose={() => setIsCanceling(false)}
+        visible={isCanceling}
+        id={sAInfo.id}
+      />
       <Card
         className="w-[60rem]"
         title={<Title returnButton size={1} title="Scrap Application" />}
@@ -291,38 +309,38 @@ export default function ScrapApplicationPage(props: Props): ReactNode {
         <div className="flex flex-col gap-4">
           <div className="flex">
             <Steps
-              current={rAInfo.status - 1}
+              current={sAInfo.status - 1}
               items={[
                 {
                   title:
-                    rAInfo.status == ApplicationStatus.Waiting
+                    sAInfo.status == ApplicationStatus.Waiting
                       ? "Waiting"
                       : "Approved",
                   status:
-                    rAInfo.status == ApplicationStatus.Canceled
+                    sAInfo.status == ApplicationStatus.Canceled
                       ? "wait"
                       : undefined,
                 },
                 {
                   title: "Appending",
                   status:
-                    rAInfo.status == ApplicationStatus.Canceled
+                    sAInfo.status == ApplicationStatus.Canceled
                       ? "wait"
                       : undefined,
                 },
                 {
                   title: "Finished",
                   status:
-                    rAInfo.status == ApplicationStatus.Canceled
+                    sAInfo.status == ApplicationStatus.Canceled
                       ? "wait"
-                      : rAInfo.status === ApplicationStatus.Finished
+                      : sAInfo.status === ApplicationStatus.Finished
                       ? "finish"
                       : "wait",
                 },
                 {
                   title: "Canceled",
                   status:
-                    rAInfo.status == ApplicationStatus.Canceled
+                    sAInfo.status == ApplicationStatus.Canceled
                       ? "error"
                       : undefined,
                 },
@@ -333,19 +351,23 @@ export default function ScrapApplicationPage(props: Props): ReactNode {
             </div>
           </div>
           <Meta
-            title={rAInfo.id}
-            description={`${rAInfo.mid} ${rAInfo.lid ? rAInfo.lid : ""}`}
+            title={sAInfo.id}
+            description={`${sAInfo.mid} ${sAInfo.lid ? sAInfo.lid : ""}`}
           />
           <Descriptions>
             <Descriptions.Item label="Request Time">
-              {rAInfo.rtime}
+              {sAInfo.rtime}
             </Descriptions.Item>
             <Descriptions.Item label="Approve Time">
-              {rAInfo.atime}
+              {sAInfo.atime}
             </Descriptions.Item>
             <Descriptions.Item label="Finish Time">
-              {rAInfo.ftime}
+              {sAInfo.ftime}
             </Descriptions.Item>
+            <Descriptions.Item label="Brief">{sAInfo.brief}</Descriptions.Item>
+            {sAInfo.note && (
+              <Descriptions.Item label="Note">{sAInfo.note}</Descriptions.Item>
+            )}
           </Descriptions>
           <Table
             title={() => <Title size={1} title="Device List" />}

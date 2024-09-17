@@ -13,7 +13,8 @@ import {
   TypeInfo,
 } from "@/service";
 import Search from "antd/es/input/Search";
-import { MenuOutlined, SelectOutlined } from "@ant-design/icons";
+import { LeftOutlined, MenuOutlined, SelectOutlined } from "@ant-design/icons";
+import { DeviceStatus } from "@/libs";
 
 interface Props {
   params: {
@@ -28,7 +29,7 @@ export default function TypePage(props: Props): ReactNode {
   const [typeInfo, setTypeInfo] = useState<TypeInfo>({
     id: "",
     name: "",
-    price: "",
+    price: 0,
     category: "",
   });
   const deviceList = useRef<DeviceInfoList>([]);
@@ -126,9 +127,13 @@ export default function TypePage(props: Props): ReactNode {
       // here is that finding the name started with `value`
       onFilter: (value, record) => record.status === value,
       render(value, record, index) {
-        if (value === 1) return <Tag color="success">Normal</Tag>;
-        if (value === 2) return <Tag color="warning">Repairing</Tag>;
-        if (value === 3)
+        if (value === DeviceStatus.Purchasing)
+          return <Tag color="processing">Purchasing</Tag>;
+        if (value === DeviceStatus.Normal)
+          return <Tag color="success">Normal</Tag>;
+        if (value === DeviceStatus.Repairing)
+          return <Tag color="warning">Repairing</Tag>;
+        if (value === DeviceStatus.Scraped)
           return (
             <Tag
               className="cursor-pointer"
@@ -233,13 +238,20 @@ export default function TypePage(props: Props): ReactNode {
 
         <Card>
           <div className="flex flex-col gap-4">
-            <Search
-              className="max-w-[40rem]"
-              size="large"
-              allowClear
-              onSearch={(query) => queryData(query)}
-              enterButton={<span className="font-semibold">Query</span>}
-            />
+            <div className="flex gap-2 items-center">
+              <Button
+                type="text"
+                shape="circle"
+                icon={<LeftOutlined style={{ color: "#2dd4bf" }} />}
+                onClick={router.back}
+              />
+              <Search
+                className="max-w-[40rem]"
+                allowClear
+                onSearch={(query) => queryData(query)}
+                enterButton={<span className="font-semibold">Query</span>}
+              />
+            </div>
             <Table columns={columns} dataSource={deviceData} />
           </div>
         </Card>

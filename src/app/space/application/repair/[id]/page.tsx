@@ -13,7 +13,7 @@ import {
 import type { TableProps } from "antd";
 import { useRouter } from "next/navigation";
 import { ReactNode, useEffect, useState } from "react";
-import { LoadingPage, Title } from "@/components";
+import { CancelApplicationDialog, LoadingPage, Title } from "@/components";
 import { getUserType } from "@/utils";
 import {
   approveRepairApplication,
@@ -22,6 +22,7 @@ import {
   findDevicesByRid,
   findRepairApplicationsByRid,
   finishRepairApplication,
+  rejectRepairApplication,
   RepairApplicationInfo,
 } from "@/service";
 import { ApplicationStatus } from "@/libs";
@@ -36,6 +37,7 @@ export default function RepairApplicationPage(props: Props): ReactNode {
   const [fetchError, setFetchError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("Error");
   const [isLoading, setIsLoading] = useState(true);
+  const [isCanceling, setIsCanceling] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
   const [rAInfo, setRAInfo] = useState<RepairApplicationInfo>({
     id: "",
@@ -106,7 +108,16 @@ export default function RepairApplicationPage(props: Props): ReactNode {
       });
   };
   const renderCancel = () => {
-    if (rAInfo.status < 3) return <Button>Cancel</Button>;
+    if (rAInfo.status < 3)
+      return (
+        <Button
+          onClick={() => {
+            setIsCanceling(true);
+          }}
+        >
+          Cancel
+        </Button>
+      );
   };
   const renderButton = () => {
     if (isLeader) {
@@ -285,6 +296,13 @@ export default function RepairApplicationPage(props: Props): ReactNode {
   return (
     <div className="flex flex-col items-center">
       {contextHolder}
+      <CancelApplicationDialog
+        fetchDataFunc={fetchData}
+        cancelFunc={rejectRepairApplication}
+        onClose={() => setIsCanceling(false)}
+        visible={isCanceling}
+        id={rAInfo.id}
+      />
       <Card
         className="w-[60rem]"
         title={<Title returnButton size={1} title="Repair Application" />}
@@ -352,6 +370,10 @@ export default function RepairApplicationPage(props: Props): ReactNode {
             <Descriptions.Item label="Manufacturer">
               {rAInfo.manufacturer}
             </Descriptions.Item>
+            <Descriptions.Item label="Brief">{rAInfo.brief}</Descriptions.Item>
+            {rAInfo.note && (
+              <Descriptions.Item label="Note">{rAInfo.note}</Descriptions.Item>
+            )}
           </Descriptions>
           <Table
             title={() => <Title size={1} title="Device List" />}

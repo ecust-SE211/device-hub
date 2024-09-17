@@ -138,7 +138,17 @@ export default function NewRepairApplication(): ReactNode {
           <FormItem name="mid" label="MID">
             <Input style={{ color: "#000" }} variant="borderless" disabled />
           </FormItem>
-          <FormItem name="brief" label="Brief" required>
+          <FormItem
+            name="brief"
+            label="Brief"
+            rules={[
+              {
+                required: true,
+                message: "Please input Brief!",
+              },
+            ]}
+            required
+          >
             <TextArea autoSize={true} />
           </FormItem>
           <FormItem

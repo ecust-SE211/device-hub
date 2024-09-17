@@ -22,6 +22,6 @@ export function getTypeInfoByTid(
   return post("/type/findTypeByTid", data);
 }
 
-export function appendType(data: TypeInfo): Promise<CommonResponse<undefined>> {
+export function appendType(data: TypeInfo): Promise<CommonResponse<IdRequest>> {
   return post("/type/appendType", data);
 }

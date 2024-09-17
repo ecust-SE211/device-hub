@@ -13,7 +13,12 @@ import {
 import type { TableProps } from "antd";
 import { useRouter } from "next/navigation";
 import { ReactNode, useEffect, useState } from "react";
-import { LoadingPage, Title, AppendDeviceForm } from "@/components";
+import {
+  LoadingPage,
+  Title,
+  AppendDeviceDialog,
+  CancelApplicationDialog,
+} from "@/components";
 import { getUserType } from "@/utils";
 import {
   appendDevices,
@@ -25,6 +30,7 @@ import {
   PurchaseApplicationInfo,
   PurchaseRecord,
   PurchaseRecordList,
+  rejectPurchaseApplication,
 } from "@/service";
 import { ApplicationStatus } from "@/libs";
 import Meta from "antd/es/card/Meta";
@@ -39,6 +45,7 @@ export default function PurchaseApplicationPage(props: Props): ReactNode {
   const [errorMessage, setErrorMessage] = useState("Error");
   const [isLoading, setIsLoading] = useState(true);
   const [isAppending, setIsAppending] = useState(false);
+  const [isCanceling, setIsCanceling] = useState(false);
   const [appendIndex, setAppendIndex] = useState(0);
   const [messageApi, contextHolder] = message.useMessage();
   const [pAInfo, setPAInfo] = useState<PurchaseApplicationInfo>({
@@ -113,7 +120,16 @@ export default function PurchaseApplicationPage(props: Props): ReactNode {
     }, 0);
   };
   const renderCancel = () => {
-    if (pAInfo.status < 3) return <Button>Cancel</Button>;
+    if (pAInfo.status < 3)
+      return (
+        <Button
+          onClick={() => {
+            setIsCanceling(true);
+          }}
+        >
+          Cancel
+        </Button>
+      );
   };
   const renderButton = () => {
     if (isLeader) {
@@ -229,8 +245,11 @@ export default function PurchaseApplicationPage(props: Props): ReactNode {
       title: "TypeName",
       dataIndex: "name",
       key: "name",
-      render: (value) => (
-        <span className="cursor-pointer" onClick={go(`/space/type/${value}`)}>
+      render: (value, record) => (
+        <span
+          className="cursor-pointer"
+          onClick={go(`/space/type/${record.id}`)}
+        >
           {value}
         </span>
       ),
@@ -286,7 +305,7 @@ export default function PurchaseApplicationPage(props: Props): ReactNode {
   return (
     <div className="flex flex-col items-center">
       {contextHolder}
-      <AppendDeviceForm
+      <AppendDeviceDialog
         fetchDataFunc={fetchData}
         onClose={() => {
           setIsAppending(false);
@@ -296,6 +315,13 @@ export default function PurchaseApplicationPage(props: Props): ReactNode {
         tid={pRInfoList[appendIndex].id}
         tName={pRInfoList[appendIndex].name}
         limit={pRInfoList[appendIndex].remain}
+      />
+      <CancelApplicationDialog
+        fetchDataFunc={fetchData}
+        cancelFunc={rejectPurchaseApplication}
+        onClose={() => setIsCanceling(false)}
+        visible={isCanceling}
+        id={pAInfo.id}
       />
       <Card
         className="w-[60rem]"
@@ -361,6 +387,10 @@ export default function PurchaseApplicationPage(props: Props): ReactNode {
               {pAInfo.ftime}
             </Descriptions.Item>
             <Descriptions.Item label="Cost">￥{pAInfo.cost}</Descriptions.Item>
+            <Descriptions.Item label="Brief">{pAInfo.brief}</Descriptions.Item>
+            {pAInfo.note && (
+              <Descriptions.Item label="Note">{pAInfo.note}</Descriptions.Item>
+            )}
           </Descriptions>
           <Table
             title={() => <Title size={1} title="Device List" />}

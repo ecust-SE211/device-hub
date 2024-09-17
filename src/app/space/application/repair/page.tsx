@@ -150,10 +150,30 @@ export default function NewRepairApplication(): ReactNode {
           <FormItem name="cost" label="Cost" required>
             <Input style={{ color: "#000" }} />
           </FormItem>
-          <FormItem name="manufacturer" label="Manufacturer" required>
+          <FormItem
+            name="manufacturer"
+            label="Manufacturer"
+            rules={[
+              {
+                required: true,
+                message: "Please input Manufacturer!",
+              },
+            ]}
+            required
+          >
             <Input />
           </FormItem>
-          <FormItem name="brief" label="Brief" required>
+          <FormItem
+            name="brief"
+            label="Brief"
+            rules={[
+              {
+                required: true,
+                message: "Please input Brief!",
+              },
+            ]}
+            required
+          >
             <TextArea autoSize={true} />
           </FormItem>
           <FormItem

@@ -15,7 +15,7 @@ interface Props {
   limit: number;
   visible: boolean;
 }
-export function AppendDeviceForm(props: Props): ReactNode {
+export function AppendDeviceDialog(props: Props): ReactNode {
   const [isLoading, setIsLoading] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
   const [form] = Form.useForm();
@@ -85,7 +85,17 @@ export function AppendDeviceForm(props: Props): ReactNode {
               disabled
             />
           </FormItem>
-          <FormItem name="num" label="Num" required>
+          <FormItem
+            name="num"
+            label="Num"
+            rules={[
+              {
+                required: true,
+                message: "Please input a number!",
+              },
+            ]}
+            required
+          >
             <Input
               type="number"
               placeholder="number"

@@ -10,6 +10,7 @@ export enum ApplicationStatus {
   Canceled = 4,
 }
 export enum DeviceStatus {
+  Purchasing = 0,
   Normal = 1,
   Repairing = 2,
   Scraped = 3,

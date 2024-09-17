@@ -198,16 +198,21 @@ export default function DevicePage(props: Props): ReactNode {
               <Meta
                 title={deviceInfo.id}
                 className="zh"
-                description={`Note: ${deviceInfo.note}`}
+                description={
+                  deviceInfo.note ? `Note: ${deviceInfo.note}` : undefined
+                }
               />
               <div className="pt-4 -my-2">
                 {(function () {
+                  if (deviceInfo.status === DeviceStatus.Purchasing)
+                    return <Tag color="processing">Purchasing</Tag>;
                   if (deviceInfo.status === DeviceStatus.Normal)
                     return <Tag color="success">Normal</Tag>;
                   if (deviceInfo.status === DeviceStatus.Repairing)
                     return <Tag color="warning">Repairing</Tag>;
                   if (deviceInfo.status === DeviceStatus.Scraped)
                     return <Tag color="error">Scraped</Tag>;
+                  return <Tag color="default">Unknown</Tag>;
                 })()}
               </div>
             </Card>
