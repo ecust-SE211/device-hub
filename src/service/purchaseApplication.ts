@@ -67,6 +67,12 @@ export function findPurchaseApplicationsByLid(
   return post("/purchase/application/findByLid", data);
 }
 
+export function findPurchaseApplicationsByPid(
+  data: IdRequest
+): Promise<CommonResponse<PurchaseApplicationInfo>> {
+  return post("/purchase/application/findByPid", data);
+}
+
 export function findPurchaseApplicationsByStatus(
   data: StatusRequest
 ): Promise<CommonResponse<PurchaseApplicationInfoList>> {

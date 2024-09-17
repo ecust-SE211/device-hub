@@ -6,31 +6,24 @@ import {
   Form,
   message,
   Modal,
-  Progress,
   Steps,
   Table,
+  Tag,
 } from "antd";
 import type { TableProps } from "antd";
 import { useRouter } from "next/navigation";
 import { ReactNode, useEffect, useState } from "react";
-import {
-  LoadingPage,
-  Title,
-  AppendDeviceDialog,
-  CancelApplicationDialog,
-} from "@/components";
+import { CancelApplicationDialog, LoadingPage, Title } from "@/components";
 import { getUserType } from "@/utils";
 import {
-  appendDevices,
-  approvePurchaseApplication,
-  DeviceRequest,
-  findPurchaseApplicationsByPid,
-  findPurchaseRecordListByPid,
-  finishPurchaseApplication,
-  PurchaseApplicationInfo,
-  PurchaseRecord,
-  PurchaseRecordList,
-  rejectPurchaseApplication,
+  approveScrapApplication,
+  DeviceInfo,
+  DeviceInfoList,
+  findDevicesBySid,
+  findScrapApplicationsBySid,
+  finishScrapApplication,
+  rejectScrapApplication,
+  ScrapApplicationInfo,
 } from "@/service";
 import { ApplicationStatus } from "@/libs";
 import Meta from "antd/es/card/Meta";
@@ -40,34 +33,33 @@ interface Props {
     id?: string;
   };
 }
-export default function PurchaseApplicationPage(props: Props): ReactNode {
+export default function ScrapApplicationPage(props: Props): ReactNode {
   const [fetchError, setFetchError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("Error");
   const [isLoading, setIsLoading] = useState(true);
-  const [isAppending, setIsAppending] = useState(false);
   const [isCanceling, setIsCanceling] = useState(false);
-  const [appendIndex, setAppendIndex] = useState(0);
   const [messageApi, contextHolder] = message.useMessage();
-  const [pAInfo, setPAInfo] = useState<PurchaseApplicationInfo>({
+  const [sAInfo, setSAInfo] = useState<ScrapApplicationInfo>({
     id: "",
     mid: "",
     lid: undefined,
     status: 3,
-    cost: 0,
     rtime: "",
     atime: undefined,
     ftime: undefined,
     brief: "",
     note: undefined,
   });
-  const [pRInfoList, setPRInfoList] = useState<PurchaseRecordList>([]);
+  const [deviceList, setDeviceList] = useState<DeviceInfoList>([]);
   const router = useRouter();
   const { id } = props.params;
+  const [form] = Form.useForm();
   const go = (href: string) => () => router.push(href);
+  const back = () => router.back();
   const isLeader = getUserType() === "L";
   const approve = () => {
     setIsLoading(true);
-    void approvePurchaseApplication({
+    void approveScrapApplication({
       id: id!,
     })
       .then((res) => {
@@ -91,7 +83,7 @@ export default function PurchaseApplicationPage(props: Props): ReactNode {
   };
   const finish = () => {
     setIsLoading(true);
-    void finishPurchaseApplication({
+    void finishScrapApplication({
       id: id!,
     })
       .then((res) => {
@@ -113,14 +105,8 @@ export default function PurchaseApplicationPage(props: Props): ReactNode {
         setFetchError(true);
       });
   };
-  const append = (index: number) => {
-    setAppendIndex(index);
-    setTimeout(() => {
-      setIsAppending(true);
-    }, 0);
-  };
   const renderCancel = () => {
-    if (pAInfo.status < 3)
+    if (sAInfo.status < 3)
       return (
         <Button
           onClick={() => {
@@ -133,7 +119,7 @@ export default function PurchaseApplicationPage(props: Props): ReactNode {
   };
   const renderButton = () => {
     if (isLeader) {
-      if (pAInfo.status === ApplicationStatus.Waiting)
+      if (sAInfo.status === ApplicationStatus.Waiting)
         return (
           <>
             <Button type="primary" onClick={approve}>
@@ -151,8 +137,8 @@ export default function PurchaseApplicationPage(props: Props): ReactNode {
         </>
       );
     }
-    if (pAInfo.status > 2) return;
-    if (pAInfo.status == 1)
+    if (sAInfo.status > 2) return;
+    if (sAInfo.status == 1)
       return (
         <>
           <Button type="primary" disabled>
@@ -161,17 +147,6 @@ export default function PurchaseApplicationPage(props: Props): ReactNode {
           {renderCancel()}
         </>
       );
-    for (const pRInfo of pRInfoList) {
-      if (pRInfo.remain !== 0)
-        return (
-          <>
-            <Button type="primary" disabled>
-              Finish
-            </Button>
-            {renderCancel()}
-          </>
-        );
-    }
     return (
       <>
         <Button type="primary" onClick={finish}>
@@ -185,7 +160,7 @@ export default function PurchaseApplicationPage(props: Props): ReactNode {
     setIsLoading(true);
     const fetchId = id!;
     return Promise.all([
-      findPurchaseApplicationsByPid({
+      findScrapApplicationsBySid({
         id: fetchId,
       }).then((res) => {
         const { code, msg } = res;
@@ -195,9 +170,9 @@ export default function PurchaseApplicationPage(props: Props): ReactNode {
           setFetchError(true);
           return;
         }
-        setPAInfo(res.data!);
+        setSAInfo(res.data!);
       }),
-      findPurchaseRecordListByPid({ id: fetchId }).then((res) => {
+      findDevicesBySid({ id: fetchId }).then((res) => {
         const { code, msg } = res;
         console.log(res);
         if (code !== "200") {
@@ -205,7 +180,7 @@ export default function PurchaseApplicationPage(props: Props): ReactNode {
           setFetchError(true);
           return;
         }
-        setPRInfoList(res.data!);
+        setDeviceList(res.data!);
       }),
     ])
       .then((_) => {
@@ -218,67 +193,81 @@ export default function PurchaseApplicationPage(props: Props): ReactNode {
   };
   useEffect(() => {
     fetchData();
+    // setIsLoading(false);
   }, []);
-  const columns: TableProps<PurchaseRecord>["columns"] = [
+  const columns: TableProps<DeviceInfo>["columns"] = [
     {
-      key: "finish",
-      render: (value, record) => (
-        <Progress
-          type="circle"
-          size={50}
-          percent={100 * (1 - record.remain / record.num)}
-          format={() => `${record.num - record.remain}/${record.num}`}
-        />
-      ),
-    },
-    {
-      title: "TID",
+      title: "DeviceID",
       dataIndex: "id",
       key: "id",
-      render: (value) => (
-        <span className="cursor-pointer" onClick={go(`/space/type/${value}`)}>
-          {value}
-        </span>
-      ),
+      render(value) {
+        return (
+          <span
+            className="cursor-pointer"
+            onClick={go(`/space/device/${value}`)}
+          >
+            {value}
+          </span>
+        );
+      },
     },
     {
-      title: "TypeName",
-      dataIndex: "name",
-      key: "name",
-      render: (value, record) => (
-        <span
-          className="cursor-pointer"
-          onClick={go(`/space/type/${record.id}`)}
-        >
-          {value}
-        </span>
-      ),
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      filters: [
+        {
+          text: "Normal",
+          value: 1,
+        },
+        {
+          text: "Scraping",
+          value: 2,
+        },
+        {
+          text: "Scraped",
+          value: 3,
+        },
+      ],
+      // specify the condition of filtering result
+      // here is that finding the name started with `value`
+      onFilter: (value, record) => record.status === value,
+      render(value, record, index) {
+        if (value === 1) return <Tag color="success">Normal</Tag>;
+        if (value === 2) return <Tag color="warning">Scraping</Tag>;
+        if (value === 3)
+          return (
+            <Tag
+              className="cursor-pointer"
+              color="error"
+              onClick={() =>
+                router.push(
+                  `/space/application/scraped/${record.scrapApplicationId}`
+                )
+              }
+            >
+              Scraped
+            </Tag>
+          );
+        return <Tag color="default">Unknown</Tag>;
+      },
     },
     {
-      title: "Num",
-      dataIndex: "num",
-      key: "num",
-      sorter: (a, b) => a.num - b.num,
+      title: "Manufacturer",
+      dataIndex: "manufacter",
+      key: "manufacturer",
     },
     {
-      title: "Price",
-      dataIndex: "price",
-      key: "price",
-      render: (value) => <span>￥{value}</span>,
-      sorter: (a, b) => a.price - b.price,
+      title: "Note",
+      dataIndex: "note",
+      key: "note",
     },
     {
-      title: "Total",
-      dataIndex: "price",
-      key: "price",
-      render: (value) => <span>￥{value}</span>,
-      sorter: (a, b) => a.price - b.price,
-    },
-    {
-      title: "Remain",
-      dataIndex: "remain",
-      key: "remain",
-      sorter: (a, b) => a.remain - b.remain,
+      title: "StorageTime",
+      dataIndex: "storageTime",
+      key: "storageTime",
+
+      sorter: (a, b) => a.storageTime.localeCompare(b.storageTime),
     },
   ];
   if (isLoading)
@@ -305,64 +294,53 @@ export default function PurchaseApplicationPage(props: Props): ReactNode {
   return (
     <div className="flex flex-col items-center">
       {contextHolder}
-      <AppendDeviceDialog
-        fetchDataFunc={fetchData}
-        onClose={() => {
-          setIsAppending(false);
-        }}
-        visible={isAppending}
-        pid={pAInfo.id}
-        tid={pRInfoList[appendIndex].id}
-        tName={pRInfoList[appendIndex].name}
-        limit={pRInfoList[appendIndex].remain}
-      />
       <CancelApplicationDialog
         fetchDataFunc={fetchData}
-        cancelFunc={rejectPurchaseApplication}
+        cancelFunc={rejectScrapApplication}
         onClose={() => setIsCanceling(false)}
         visible={isCanceling}
-        id={pAInfo.id}
+        id={sAInfo.id}
       />
       <Card
         className="w-[60rem]"
-        title={<Title returnButton size={1} title="Purchase Application" />}
+        title={<Title returnButton size={1} title="Scrap Application" />}
         style={{ border: "none", cursor: "default" }}
       >
         <div className="flex flex-col gap-4">
           <div className="flex">
             <Steps
-              current={pAInfo.status - 1}
+              current={sAInfo.status - 1}
               items={[
                 {
                   title:
-                    pAInfo.status == ApplicationStatus.Waiting
+                    sAInfo.status == ApplicationStatus.Waiting
                       ? "Waiting"
                       : "Approved",
                   status:
-                    pAInfo.status == ApplicationStatus.Canceled
+                    sAInfo.status == ApplicationStatus.Canceled
                       ? "wait"
                       : undefined,
                 },
                 {
                   title: "Appending",
                   status:
-                    pAInfo.status == ApplicationStatus.Canceled
+                    sAInfo.status == ApplicationStatus.Canceled
                       ? "wait"
                       : undefined,
                 },
                 {
                   title: "Finished",
                   status:
-                    pAInfo.status == ApplicationStatus.Canceled
+                    sAInfo.status == ApplicationStatus.Canceled
                       ? "wait"
-                      : pAInfo.status === ApplicationStatus.Finished
+                      : sAInfo.status === ApplicationStatus.Finished
                       ? "finish"
                       : "wait",
                 },
                 {
                   title: "Canceled",
                   status:
-                    pAInfo.status == ApplicationStatus.Canceled
+                    sAInfo.status == ApplicationStatus.Canceled
                       ? "error"
                       : undefined,
                 },
@@ -373,52 +351,28 @@ export default function PurchaseApplicationPage(props: Props): ReactNode {
             </div>
           </div>
           <Meta
-            title={pAInfo.id}
-            description={`${pAInfo.mid} ${pAInfo.lid ? pAInfo.lid : ""}`}
+            title={sAInfo.id}
+            description={`${sAInfo.mid} ${sAInfo.lid ? sAInfo.lid : ""}`}
           />
           <Descriptions>
             <Descriptions.Item label="Request Time">
-              {pAInfo.rtime}
+              {sAInfo.rtime}
             </Descriptions.Item>
             <Descriptions.Item label="Approve Time">
-              {pAInfo.atime}
+              {sAInfo.atime}
             </Descriptions.Item>
             <Descriptions.Item label="Finish Time">
-              {pAInfo.ftime}
+              {sAInfo.ftime}
             </Descriptions.Item>
-            <Descriptions.Item label="Cost">￥{pAInfo.cost}</Descriptions.Item>
-            <Descriptions.Item label="Brief">{pAInfo.brief}</Descriptions.Item>
-            {pAInfo.note && (
-              <Descriptions.Item label="Note">{pAInfo.note}</Descriptions.Item>
+            <Descriptions.Item label="Brief">{sAInfo.brief}</Descriptions.Item>
+            {sAInfo.note && (
+              <Descriptions.Item label="Note">{sAInfo.note}</Descriptions.Item>
             )}
           </Descriptions>
           <Table
             title={() => <Title size={1} title="Device List" />}
-            columns={
-              isLeader
-                ? columns
-                : columns.concat({
-                    title: "Option",
-                    key: "option",
-                    render: (_, record, index) => {
-                      if (
-                        pAInfo.status != ApplicationStatus.Approved ||
-                        record.remain < 1
-                      )
-                        return <Button disabled>Append</Button>;
-                      return (
-                        <Button
-                          onClick={() => {
-                            append(index);
-                          }}
-                        >
-                          Append
-                        </Button>
-                      );
-                    },
-                  })
-            }
-            dataSource={pRInfoList}
+            columns={columns}
+            dataSource={deviceList}
           />
         </div>
       </Card>

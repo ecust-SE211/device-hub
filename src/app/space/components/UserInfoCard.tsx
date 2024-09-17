@@ -1,6 +1,6 @@
 "use client";
 import { LoadingPage } from "@/components";
-import { Button, Form, Input, message } from "antd";
+import { Button, Form, Input, message, Popconfirm } from "antd";
 import { useRouter } from "next/navigation";
 import React, { ReactNode, useState } from "react";
 import { EditOutlined, LogoutOutlined, UserOutlined } from "@ant-design/icons";
@@ -13,6 +13,15 @@ export default function UserInfoCard(): ReactNode {
   const [editing, setEditing] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const infoEdit = getUserType() === "M" ? managerInfoEdit : leaderInfoEdit;
+  const logout = () => {
+    localStorage.removeItem("id");
+    localStorage.removeItem("name");
+    localStorage.removeItem("tel");
+    localStorage.removeItem("email");
+    localStorage.removeItem("token");
+    localStorage.removeItem("userType");
+    router.push("/");
+  };
   const submit = (values: any) => {
     if (submitting) return;
     setSubmitting(true);
@@ -53,16 +62,24 @@ export default function UserInfoCard(): ReactNode {
           {getUserType() === "M" ? "Manager" : "Leader"} Info
         </span>
         <UserOutlined style={{ visibility: "hidden", fontSize: "1.25rem" }} />
-        <Button
-          type="text"
-          shape="circle"
-          style={{
-            position: "absolute",
-            right: "0.5rem",
-          }}
-          icon={<LogoutOutlined style={{ color: "#ffffff" }} />}
-          onClick={() => router.push("/")}
-        />
+        <Popconfirm
+          title="Log out"
+          description="Are you sure you want to log out ?"
+          onConfirm={logout}
+          onCancel={() => {}}
+          okText="Yes"
+          cancelText="No"
+        >
+          <Button
+            type="text"
+            shape="circle"
+            style={{
+              position: "absolute",
+              right: "0.5rem",
+            }}
+            icon={<LogoutOutlined style={{ color: "#ffffff" }} />}
+          />
+        </Popconfirm>
       </div>
       <div className="w-full bg-white rounded-xl px-4 py-2">
         <Form

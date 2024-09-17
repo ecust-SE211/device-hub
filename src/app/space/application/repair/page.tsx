@@ -4,15 +4,16 @@ import { AppstoreAddOutlined, MinusOutlined } from "@ant-design/icons";
 import { Button, Card, Form, Input, message, Modal, Radio, Select } from "antd";
 import FormItem from "antd/es/form/FormItem";
 import { ReactNode, useEffect, useState } from "react";
-import { appendRepairApplication, findDevicesByStatus } from "@/service";
+import {
+  appendRepairApplication,
+  getDeviceIds,
+  getTypes,
+  RepairApplicationRequest,
+  TypeListResponse,
+} from "@/service";
 import { useRouter } from "next/navigation";
 import { getId, getUserType } from "@/utils";
-import FormList from "antd/es/form/FormList";
 import TextArea from "antd/es/input/TextArea";
-import { DeviceStatus } from "@/libs";
-type Device = Array<{
-  id: string;
-}>;
 export default function NewRepairApplication(): ReactNode {
   const router = useRouter();
   const [messageApi, contextHolder] = message.useMessage();
@@ -20,14 +21,29 @@ export default function NewRepairApplication(): ReactNode {
   const [fetchError, setFetchError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("Error");
   const [isLoading, setIsLoading] = useState(true);
-  const [devices, setDevices] = useState<Device>([]);
+  const [deviceIds, setDeviceIds] = useState<Array<string>>([]);
   const [form] = Form.useForm();
   const go = (href: string) => () => router.push(href);
   const back = () => router.back();
-  const submit = (values: any) => {
+  const submit = (values: {
+    mid: string;
+    brief: string;
+    manufacturer: string;
+    cost: number;
+    devices: string;
+  }) => {
     if (submitting) return;
     setSubmitting(true);
-    appendRepairApplication(values)
+    const request: RepairApplicationRequest = {
+      mid: values.mid,
+      brief: values.brief,
+      manufacturer: values.manufacturer,
+      cost: values.cost,
+      devices: values.devices.split("\n").map((id) => {
+        return { id };
+      }),
+    };
+    appendRepairApplication(request)
       .then((res) => {
         const { code, msg } = res;
         console.log(res);
@@ -47,7 +63,7 @@ export default function NewRepairApplication(): ReactNode {
       });
   };
   const fetchData = async () => {
-    return findDevicesByStatus({ status: DeviceStatus.Normal })
+    return getDeviceIds()
       .then((res) => {
         const { code, msg } = res;
         console.log(res);
@@ -56,13 +72,7 @@ export default function NewRepairApplication(): ReactNode {
           setFetchError(true);
           return;
         }
-        setDevices(
-          res.data!.map((item) => {
-            return {
-              id: item.id,
-            };
-          })
-        );
+        setDeviceIds(res.data!);
         setIsLoading(false);
       })
       .catch((err) => {
@@ -127,7 +137,7 @@ export default function NewRepairApplication(): ReactNode {
         {contextHolder}
         <Form
           name="application"
-          labelCol={{ span: 4 }}
+          labelCol={{ span: 6 }}
           initialValues={{
             mid: getId(),
           }}
@@ -137,11 +147,34 @@ export default function NewRepairApplication(): ReactNode {
           <FormItem name="mid" label="MID">
             <Input style={{ color: "#000" }} variant="borderless" disabled />
           </FormItem>
-          <FormItem name="manufacturer" label="Manufacturer" required>
+          <FormItem name="cost" label="Cost" required>
+            <Input style={{ color: "#000" }} />
+          </FormItem>
+          <FormItem
+            name="manufacturer"
+            label="Manufacturer"
+            rules={[
+              {
+                required: true,
+                message: "Please input Manufacturer!",
+              },
+            ]}
+            required
+          >
             <Input />
           </FormItem>
-          <FormItem name="cost" label="Cost" required>
-            <Input type="number" />
+          <FormItem
+            name="brief"
+            label="Brief"
+            rules={[
+              {
+                required: true,
+                message: "Please input Brief!",
+              },
+            ]}
+            required
+          >
+            <TextArea autoSize={true} />
           </FormItem>
           <FormItem
             label="Devices"
@@ -149,85 +182,31 @@ export default function NewRepairApplication(): ReactNode {
             required
             rules={[
               () => ({
-                validator(_, value) {
-                  if (value ?? [].length > 0) {
-                    return Promise.resolve();
-                  }
-                  return Promise.reject(new Error("Need at least 1 type."));
-                },
-              }),
-              () => ({
-                validator(_, value) {
-                  let idSet = new Set();
-                  for (const item of value) {
-                    if (idSet.has(item.id)) {
+                validator(_, value: string) {
+                  const idList = value.split("\n");
+                  const idSet = new Set(idList);
+                  if (idSet.size < idList.length)
+                    return Promise.reject(
+                      new Error("Cannot have two duplicate DeviceId.")
+                    );
+                  for (const did of idList) {
+                    if (deviceIds.includes(did)) continue;
+                    if (did == "")
                       return Promise.reject(
-                        new Error("Cannot have two duplicate types.")
+                        new Error(`Please do not enter blank lines.`)
                       );
-                    }
-                    idSet.add(item.id);
+                    return Promise.reject(
+                      new Error(`"${did}" is not a legitimate DeviceId.`)
+                    );
                   }
                   return Promise.resolve();
                 },
               }),
             ]}
           >
-            <FormList name="types">
-              {(fields, { add, remove }) => (
-                <>
-                  {fields.map((field, index) => (
-                    <FormItem key={field.key}>
-                      <div className="flex gap-2">
-                        <div className="flex-col flex-1">
-                          <FormItem
-                            name={[field.name, "id"]}
-                            rules={[
-                              () => ({
-                                validator(_, value) {
-                                  if (value === undefined)
-                                    return Promise.reject(
-                                      new Error("Please select a type.")
-                                    );
-                                  return Promise.resolve();
-                                },
-                              }),
-                            ]}
-                          >
-                            <Select
-                              showSearch
-                              placeholder="Select DeviceID"
-                              optionFilterProp="label"
-                              options={devices.map((item) => {
-                                return { label: item.id, value: item.id };
-                              })}
-                            />
-                          </FormItem>
-                        </div>
-                        <Button
-                          icon={<MinusOutlined />}
-                          onClick={() => {
-                            remove(field.name);
-                          }}
-                        />
-                      </div>
-                    </FormItem>
-                  ))}
-                  <Button
-                    icon={<AppstoreAddOutlined />}
-                    type="dashed"
-                    onClick={() => add()}
-                    block
-                  >
-                    Add Device
-                  </Button>
-                </>
-              )}
-            </FormList>
+            <TextArea autoSize={true} placeholder="DeviceID (Split by wrap)" />
           </FormItem>
-          <FormItem name="brief" label="brief" required>
-            <TextArea autoSize={true} />
-          </FormItem>
-          <FormItem wrapperCol={{ offset: 4 }}>
+          <FormItem wrapperCol={{ offset: 6 }}>
             <Button className="w-40" type="primary" htmlType="submit">
               Submit
             </Button>

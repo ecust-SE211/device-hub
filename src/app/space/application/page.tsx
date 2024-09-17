@@ -42,8 +42,6 @@ interface ApplicationInfoForDisplay {
   cost: string;
   rtime: string;
   ftime: string;
-  // brief: string;
-  // note: string;
   type: ApplicationType;
   urgent: boolean;
 }
@@ -101,8 +99,6 @@ export default function ApplicationListPage(props: Props): ReactNode {
             cost,
             rtime,
             ftime = "",
-            // brief,
-            // note,
             type,
           } = application;
           const urgent = !!lid && status === ApplicationStatus.Waiting;
@@ -150,8 +146,6 @@ export default function ApplicationListPage(props: Props): ReactNode {
 
   useEffect(() => {
     fetchData();
-    // 使用空列表使方法只允许一次
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const columns: TableProps<ApplicationInfoForDisplay>["columns"] = [
     {
@@ -159,13 +153,13 @@ export default function ApplicationListPage(props: Props): ReactNode {
       dataIndex: "id",
       key: "id",
       render(value, record) {
-        let url = `/application/purchase/`;
+        let url = `/space/application/purchase/`;
         if (record.type == ApplicationType.Purchase)
-          url = `/application/purchase/${value}`;
+          url = `/space/application/purchase/${value}`;
         else if (record.type == ApplicationType.Repair)
-          url = `/application/repair/${value}`;
+          url = `/space/application/repair/${value}`;
         else if (record.type == ApplicationType.Scrap)
-          url = `/application/scrap/${value}`;
+          url = `/space/application/scrap/${value}`;
         else return <span>{value}</span>;
         return (
           <span className="cursor-pointer" onClick={go(url)}>

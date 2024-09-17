@@ -136,7 +136,7 @@ export default function NewPurchaseApplication(): ReactNode {
         {contextHolder}
         <Form
           name="application"
-          labelCol={{ span: 4 }}
+          labelCol={{ span: 6 }}
           initialValues={{
             mid: getId(),
             cost: 0,
@@ -202,7 +202,7 @@ export default function NewPurchaseApplication(): ReactNode {
                           >
                             <Select
                               showSearch
-                              placeholder="Select TypeName"
+                              placeholder="Select TypeID"
                               optionFilterProp="label"
                               options={types.map((item) => {
                                 return { label: item.id, value: item.id };
@@ -237,7 +237,7 @@ export default function NewPurchaseApplication(): ReactNode {
                             rules={[
                               () => ({
                                 validator(_, value) {
-                                  if (value < 0)
+                                  if (value < 1)
                                     return Promise.reject(
                                       new Error(
                                         "The number must be greater than 0."
@@ -276,10 +276,20 @@ export default function NewPurchaseApplication(): ReactNode {
               )}
             </FormList>
           </FormItem>
-          <FormItem name="brief" label="brief" required>
+          <FormItem
+            name="brief"
+            label="brief"
+            rules={[
+              {
+                required: true,
+                message: "Please input Brief!",
+              },
+            ]}
+            required
+          >
             <TextArea autoSize={true} />
           </FormItem>
-          <FormItem wrapperCol={{ offset: 4 }}>
+          <FormItem wrapperCol={{ offset: 6 }}>
             <Button className="w-40" type="primary" htmlType="submit">
               Submit
             </Button>

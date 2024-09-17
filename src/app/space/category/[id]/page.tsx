@@ -1,11 +1,12 @@
 "use client";
-import { Card, Modal } from "antd";
+import { Button, Card, Modal } from "antd";
 import { useRouter } from "next/navigation";
 import { ReactNode, useEffect, useRef, useState } from "react";
 import { LoadingPage, Title } from "@/components";
 import { categoryInfoMap } from "@/utils";
 import { getTypeInfoListByCId, TypeInfoList } from "@/service";
 import Search from "antd/es/input/Search";
+import { FileAddOutlined } from "@ant-design/icons";
 
 interface Props {
   params: {
@@ -20,6 +21,7 @@ export default function TypeListPage(props: Props): ReactNode {
   const [typeList, setTypeList] = useState<TypeInfoList>([]);
   const typeData = useRef<TypeInfoList>([]);
   const router = useRouter();
+
   const { id: cid } = props.params;
   if (cid) {
     try {
@@ -28,7 +30,8 @@ export default function TypeListPage(props: Props): ReactNode {
       router.replace("/space/category/C001");
     }
   }
-  // const temp = parseInt(params.category);
+  const go = (href: string) => () => router.push(href);
+  const back = () => router.back();
 
   const fetchData = async () => {
     setIsLoading(true);
@@ -62,8 +65,6 @@ export default function TypeListPage(props: Props): ReactNode {
   };
   useEffect(() => {
     fetchData();
-    // 使用空列表使方法只允许一次
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const renderCategoryItems = () => {
     const CardList: Array<ReactNode> = [];
@@ -150,13 +151,21 @@ export default function TypeListPage(props: Props): ReactNode {
         {renderCategoryItems()}
       </div>
       <div className="flex flex-col flex-wrap flex-1 gap-4">
-        <Search
-          className="max-w-[40rem]"
-          size="large"
-          allowClear
-          onSearch={(query) => queryData(query)}
-          enterButton={<span className="font-semibold">Query</span>}
-        />
+        <div className="flex gap-4">
+          <Search
+            className="max-w-[40rem]"
+            allowClear
+            onSearch={(query) => queryData(query)}
+            enterButton={<span className="font-semibold">Query</span>}
+          />
+          <Button
+            type="default"
+            icon={<FileAddOutlined />}
+            onClick={go("/space/type")}
+          >
+            <span className="font-semibold">New Type</span>
+          </Button>
+        </div>
         <div className="flex min-h-[10rem] flex-wrap flex-1 gap-4 relative">
           {renderCards()}
         </div>

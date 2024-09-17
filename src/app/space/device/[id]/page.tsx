@@ -40,6 +40,7 @@ export default function DevicePage(props: Props): ReactNode {
     id: "",
     tid: "",
     status: 1,
+    manufacter: "",
     purchaseApplicationId: "",
     scrapApplicationId: "",
     storageTime: "",
@@ -92,8 +93,6 @@ export default function DevicePage(props: Props): ReactNode {
   };
   useEffect(() => {
     fetchData();
-    // 使用空列表使方法只允许一次
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   /** 
    *   id: string;
@@ -116,7 +115,7 @@ export default function DevicePage(props: Props): ReactNode {
       render: (value) => (
         <span
           className="cursor-pointer"
-          onClick={go(`/application/repair/${value}`)}
+          onClick={go(`/space/application/repair/${value}`)}
         >
           {value}
         </span>
@@ -199,16 +198,21 @@ export default function DevicePage(props: Props): ReactNode {
               <Meta
                 title={deviceInfo.id}
                 className="zh"
-                description={`Note: ${deviceInfo.note}`}
+                description={
+                  deviceInfo.note ? `Note: ${deviceInfo.note}` : undefined
+                }
               />
               <div className="pt-4 -my-2">
                 {(function () {
+                  if (deviceInfo.status === DeviceStatus.Purchasing)
+                    return <Tag color="processing">Purchasing</Tag>;
                   if (deviceInfo.status === DeviceStatus.Normal)
                     return <Tag color="success">Normal</Tag>;
                   if (deviceInfo.status === DeviceStatus.Repairing)
                     return <Tag color="warning">Repairing</Tag>;
                   if (deviceInfo.status === DeviceStatus.Scraped)
                     return <Tag color="error">Scraped</Tag>;
+                  return <Tag color="default">Unknown</Tag>;
                 })()}
               </div>
             </Card>

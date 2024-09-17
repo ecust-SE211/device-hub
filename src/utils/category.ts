@@ -19,14 +19,14 @@ const imageList: Record<string, StaticImageData> = {
   C007: c007,
 };
 
-export interface GetCategoryInfoResponse {
+export interface GetCategoryInfo {
   id: string;
   name: string;
   description: string;
   image?: StaticImageData;
 }
 
-export type GetCategoryInfoListResponse = Array<GetCategoryInfoResponse>;
+export type GetCategoryInfoList = Array<GetCategoryInfo>;
 export interface CategoryInfo {
   id: string;
   name: string;
@@ -34,23 +34,23 @@ export interface CategoryInfo {
   image: StaticImageData;
 }
 
-export type CategoryInfoList = Map<string, CategoryInfo>;
+export type CategoryInfoMap = Map<string, CategoryInfo>;
 
-const categoryInfoList: CategoryInfoList = new Map();
+const categoryInfoMap: CategoryInfoMap = new Map();
+const categoryInfoList: GetCategoryInfoList = new Array();
 const initCategoryInfo = async () => {
-  const res = await get<GetCategoryInfoListResponse>(
-    "/category/getCategoryList"
-  );
+  const res = await get<GetCategoryInfoList>("/category/getCategoryList");
   const { code, msg } = res;
   console.log(res);
   if (code !== "200") {
     throw new Error(`Code :${code}\n${msg}`);
   }
-  categoryInfoList.clear();
+  categoryInfoMap.clear();
   res.data!.forEach((info, index) => {
     info.image = imageList[info.id] ?? blank;
-    categoryInfoList.set(info.id, info as CategoryInfo);
+    categoryInfoList.push(info);
+    categoryInfoMap.set(info.id, info as CategoryInfo);
   });
 };
 
-export { categoryInfoList as categoryInfoMap, initCategoryInfo };
+export { categoryInfoList, categoryInfoMap, initCategoryInfo };

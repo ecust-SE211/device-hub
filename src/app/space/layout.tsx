@@ -26,7 +26,7 @@ function mainLayout({ children }: React.PropsWithChildren) {
     }
   }, 200);
   const handleResize = throttle(() => {
-    const isShrinking = window.innerWidth < 1188;
+    const isShrinking = window.innerWidth < 1360;
     if (isShrinking == hiddenUserInfo) {
       setHiddenUserInfo(!isShrinking);
     }

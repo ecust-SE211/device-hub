@@ -1,4 +1,4 @@
-import { post, CommonResponse } from "@/libs";
+import { post, CommonResponse, get } from "@/libs";
 import {
   DeviceStatus,
   IdPageRequest,
@@ -23,6 +23,7 @@ export interface DeviceInfo extends Record<string, any> {
 export interface DeviceRequest extends Record<string, any> {
   id: string;
   purchaseApplicationId: string;
+  manufacturer?: string;
   note?: string;
 }
 
@@ -88,14 +89,24 @@ export async function findDevicesByStatus(
   return post("/device/findDevicesByStatus", data);
 }
 
+export async function updateDevice(
+  data: DeviceInfo
+): Promise<CommonResponse<DeviceInfo>> {
+  return post("/device/updateDevice", data);
+}
+
 export async function appendDevice(
   data: DeviceRequest
 ): Promise<CommonResponse<undefined>> {
   return post("/device/appendDevice", data);
 }
 
-export async function updateDevice(
-  data: DeviceInfo
-): Promise<CommonResponse<DeviceInfo>> {
-  return post("/device/updateDevice", data);
+export async function appendDevices(
+  data: DeviceRequest & { num: number }
+): Promise<CommonResponse<undefined>> {
+  return post("/device/appendDevices", data);
+}
+
+export async function getDeviceIds(): Promise<CommonResponse<Array<string>>> {
+  return get("/device/getDeviceIds");
 }
