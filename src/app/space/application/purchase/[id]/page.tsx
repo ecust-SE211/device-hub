@@ -344,7 +344,7 @@ export default function PurchaseApplicationPage(props: Props): ReactNode {
                       : undefined,
                 },
                 {
-                  title: "Appending",
+                  title: "Purchasing",
                   status:
                     pAInfo.status == ApplicationStatus.Canceled
                       ? "wait"
