@@ -8,7 +8,7 @@ import UserInfoCard from "./components/UserInfoCard";
 import { isLogin } from "@/utils";
 import { useRouter } from "next/navigation";
 import { init, isInitialized } from "@/utils";
-function mainLayout({ children }: React.PropsWithChildren) {
+function MainLayout({ children }: React.PropsWithChildren) {
   const [initError, setInitError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [hiddenUserInfo, setHiddenUserInfo] = useState(true);
@@ -123,4 +123,4 @@ function mainLayout({ children }: React.PropsWithChildren) {
   );
 }
 
-export default mainLayout;
+export default MainLayout;

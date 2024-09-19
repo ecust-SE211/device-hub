@@ -3,7 +3,7 @@ import { LoadingPage, Title } from "@/components";
 import { AppstoreAddOutlined, MinusOutlined } from "@ant-design/icons";
 import { Button, Card, Form, Input, message, Modal, Radio, Select } from "antd";
 import FormItem from "antd/es/form/FormItem";
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useCallback, useEffect, useState } from "react";
 import {
   appendPurchaseApplication,
   getTypes,
@@ -24,14 +24,12 @@ export default function NewPurchaseApplication(): ReactNode {
   const [typePrice, setTypePrice] = useState<Map<string, number>>(new Map());
   const [form] = Form.useForm();
   const go = (href: string) => () => router.push(href);
-  const back = () => router.back();
   const submit = (values: any) => {
     if (submitting) return;
     setSubmitting(true);
     appendPurchaseApplication(values)
       .then((res) => {
         const { code, msg } = res;
-        console.log(res);
         if (code !== "200") {
           messageApi.error(`Code :${code}\n${msg}`);
           setSubmitting(false);
@@ -47,11 +45,20 @@ export default function NewPurchaseApplication(): ReactNode {
         setSubmitting(false);
       });
   };
-  const fetchData = async () => {
+  const handleGetCost = () => {
+    const types = form.getFieldValue(["types"]);
+    let sum = 0;
+    for (const type of types) {
+      if (type === undefined || type.id === undefined || type.num === undefined)
+        continue;
+      sum += parseFloat(type.num) * typePrice.get(type.id)!;
+    }
+    form.setFieldValue("cost", sum);
+  };
+  const fetchData = useCallback(async () => {
     return getTypes()
       .then((res) => {
         const { code, msg } = res;
-        console.log(res);
         if (code !== "200") {
           setErrorMessage(`Code :${code}\n${msg}`);
           setFetchError(true);
@@ -68,21 +75,11 @@ export default function NewPurchaseApplication(): ReactNode {
         setErrorMessage(`${err}`);
         setFetchError(true);
       });
-  };
-  const handleGetCost = () => {
-    const types = form.getFieldValue(["types"]);
-    let sum = 0;
-    for (const type of types) {
-      if (type === undefined || type.id === undefined || type.num === undefined)
-        continue;
-      sum += parseFloat(type.num) * typePrice.get(type.id)!;
-    }
-    form.setFieldValue("cost", sum);
-  };
+  }, [typePrice]);
   useEffect(() => {
-    if (getUserType() !== "M") back();
+    if (getUserType() !== "M") router.back();
     void fetchData();
-  }, []);
+  }, [router, fetchData]);
   if (isLoading)
     return (
       <>

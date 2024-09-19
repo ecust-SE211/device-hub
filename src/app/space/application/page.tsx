@@ -2,7 +2,7 @@
 import { Button, Card, Modal, Segmented, Table, Tag } from "antd";
 import type { TableProps } from "antd";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import { ReactNode, useEffect, useRef, useState } from "react";
+import { ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import { LoadingPage, Title } from "@/components";
 import { categoryInfoMap, getId, getUserType } from "@/utils";
 import {
@@ -76,15 +76,27 @@ export default function ApplicationListPage(props: Props): ReactNode {
   const [optionType, setOptionType] = useState<OptionType>(tempOptionType);
 
   const go = (href: string) => () => router.push(href);
-  const back = () => router.back();
   const uid = getId();
 
-  const fetchData = async () => {
+  const queryData = (query: string) => {
+    const applicationData = applicationList.current.filter((item) => {
+      return `${item.id}${item.mid}${item.lid}${item.rtime}${item.ftime}`.includes(
+        query
+      );
+    });
+    setApplicationData(applicationData);
+    setApplicationDataMy(
+      getUserType() === "M"
+        ? applicationData.filter((item) => item.mid === uid)
+        : applicationData.filter((item) => item.lid === uid)
+    );
+  };
+
+  const fetchData = useCallback(async () => {
     setIsLoading(true);
     return getApplications()
       .then((res) => {
         const { code, msg } = res;
-        console.log(res);
         if (code !== "200") {
           setErrorMessage(`Code :${code}\n${msg}`);
           setFetchError(true);
@@ -128,25 +140,10 @@ export default function ApplicationListPage(props: Props): ReactNode {
         setErrorMessage(`${err}`);
         setFetchError(true);
       });
-  };
-
-  const queryData = (query: string) => {
-    const applicationData = applicationList.current.filter((item) => {
-      return `${item.id}${item.mid}${item.lid}${item.rtime}${item.ftime}`.includes(
-        query
-      );
-    });
-    setApplicationData(applicationData);
-    setApplicationDataMy(
-      getUserType() === "M"
-        ? applicationData.filter((item) => item.mid === uid)
-        : applicationData.filter((item) => item.lid === uid)
-    );
-  };
-
+  }, [uid]);
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
   const columns: TableProps<ApplicationInfoForDisplay>["columns"] = [
     {
       title: "ApplicationID",

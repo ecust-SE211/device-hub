@@ -32,7 +32,7 @@ export interface RepairApplicationRequest {
 
 export type RepairApplicationInfoList = Array<RepairApplicationInfo>;
 
-interface updateInfo extends Record<string, any> {
+interface UpdateInfo extends Record<string, any> {
   id: string;
   mid: string;
   lid?: string;
@@ -95,7 +95,7 @@ export function finishRepairApplication(
 }
 
 export function updateRepairApplication(
-  data: updateInfo
-): Promise<CommonResponse<updateInfo>> {
+  data: UpdateInfo
+): Promise<CommonResponse<UpdateInfo>> {
   return post("/repair/application/update", data);
 }

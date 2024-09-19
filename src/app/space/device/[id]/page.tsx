@@ -1,35 +1,22 @@
 "use client";
-import { Button, Card, Modal, Table, Tag } from "antd";
+import { Card, Modal, Table, Tag } from "antd";
 import type { TableProps } from "antd";
 import { useRouter } from "next/navigation";
-import { ReactNode, useEffect, useRef, useState } from "react";
+import { ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import { LoadingPage, Title } from "@/components";
-import { categoryInfoMap } from "@/utils";
 import {
   DeviceInfo,
-  DeviceInfoList,
   findDeviceByDid,
-  findDevicesByTid,
   findRepairApplicationsByDid,
-  getTypeInfoByTid,
   RepairApplicationInfo,
   RepairApplicationInfoList,
-  TypeInfo,
 } from "@/service";
-import Search from "antd/es/input/Search";
-import { MenuOutlined, SelectOutlined } from "@ant-design/icons";
-import {
-  ApplicationInfo,
-  ApplicationInfoList,
-  ApplicationType,
-  findApplicationsByDid,
-} from "@/service/application";
 import { ApplicationStatus, DeviceStatus } from "@/libs";
 import Meta from "antd/es/card/Meta";
 
 interface Props {
   params: {
-    id?: string;
+    id: string;
   };
 }
 export default function DevicePage(props: Props): ReactNode {
@@ -54,17 +41,14 @@ export default function DevicePage(props: Props): ReactNode {
   const { id } = props.params;
 
   const go = (href: string) => () => router.push(href);
-  const back = () => router.back();
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     setIsLoading(true);
-    const fetchId = id!;
     return Promise.all([
       findDeviceByDid({
-        id: fetchId,
+        id,
       }).then((res) => {
         const { code, msg } = res;
-        console.log(res);
         if (code !== "200") {
           setErrorMessage(`Code :${code}\n${msg}`);
           setFetchError(true);
@@ -72,9 +56,8 @@ export default function DevicePage(props: Props): ReactNode {
         }
         setDeviceInfo(res.data!);
       }),
-      findRepairApplicationsByDid({ id: fetchId }).then((res) => {
+      findRepairApplicationsByDid({ id }).then((res) => {
         const { code, msg } = res;
-        console.log(res);
         if (code !== "200") {
           setErrorMessage(`Code :${code}\n${msg}`);
           setFetchError(true);
@@ -90,23 +73,10 @@ export default function DevicePage(props: Props): ReactNode {
         setErrorMessage(`${err}`);
         setFetchError(true);
       });
-  };
+  }, [id]);
   useEffect(() => {
     fetchData();
-  }, []);
-  /** 
-   *   id: string;
-  mid: string;
-  lid?: string;
-  status: ApplicationStatus;
-  manufacturer: string;
-  cost: number;
-  rtime: string;
-  atime?: string;
-  ftime?: string;
-  brief: string;
-  note?: string;
-   */
+  }, [fetchData]);
   const columns: TableProps<RepairApplicationInfo>["columns"] = [
     {
       title: "RID",

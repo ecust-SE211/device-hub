@@ -1,6 +1,6 @@
 "use client";
 import { Form, Input, message, Modal } from "antd";
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useState } from "react";
 import { LoadingPage } from "@/components";
 import FormItem from "antd/es/form/FormItem";
 import TextArea from "antd/es/input/TextArea";
@@ -18,14 +18,12 @@ export function CancelApplicationDialog(props: Props): ReactNode {
   const [messageApi, contextHolder] = message.useMessage();
   const [form] = Form.useForm();
   const submit = (value: RejectRequest) => {
-    console.log(value);
     if (isLoading) return;
     setIsLoading(true);
     props
       .cancelFunc(value)
       .then((res) => {
         const { code, msg } = res;
-        console.log(res);
         if (code !== "200") {
           messageApi.error(`Code :${code}\n${msg}`);
           return;
@@ -43,7 +41,6 @@ export function CancelApplicationDialog(props: Props): ReactNode {
         messageApi.error(`${err}`);
       });
   };
-  useEffect(() => {}, [props]);
 
   return (
     <>

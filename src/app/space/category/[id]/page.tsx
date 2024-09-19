@@ -1,7 +1,7 @@
 "use client";
 import { Button, Card, Modal } from "antd";
 import { useRouter } from "next/navigation";
-import { ReactNode, useEffect, useRef, useState } from "react";
+import { ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import { LoadingPage, Title } from "@/components";
 import { categoryInfoMap } from "@/utils";
 import { getTypeInfoListByCId, TypeInfoList } from "@/service";
@@ -10,7 +10,7 @@ import { FileAddOutlined } from "@ant-design/icons";
 
 interface Props {
   params: {
-    id?: string;
+    id: string;
   };
 }
 export default function TypeListPage(props: Props): ReactNode {
@@ -22,26 +22,29 @@ export default function TypeListPage(props: Props): ReactNode {
   const typeData = useRef<TypeInfoList>([]);
   const router = useRouter();
 
-  const { id: cid } = props.params;
-  if (cid) {
+  const { id } = props.params;
+  if (id) {
     try {
-      if (!categoryInfoMap.has(cid)) router.replace("/space/category/C001");
+      if (!categoryInfoMap.has(id)) router.replace("/space/category/C001");
     } catch (error) {
       router.replace("/space/category/C001");
     }
   }
   const go = (href: string) => () => router.push(href);
-  const back = () => router.back();
 
-  const fetchData = async () => {
+  const queryData = (query: string) => {
+    const typeInfoList = typeData.current.filter((item) => {
+      return `${item.id}${item.explain}${item.name}`.includes(query);
+    });
+    setTypeList(typeInfoList);
+  };
+  const fetchData = useCallback(async () => {
     setIsLoading(true);
-    const fetchId = cid!;
     return getTypeInfoListByCId({
-      id: fetchId,
+      id,
     })
       .then((res) => {
         const { code, msg } = res;
-        console.log(res);
         if (code !== "200") {
           setErrorMessage(`Code :${code}\n${msg}`);
           setFetchError(true);
@@ -55,17 +58,10 @@ export default function TypeListPage(props: Props): ReactNode {
         setErrorMessage(`${err}`);
         setFetchError(true);
       });
-  };
-
-  const queryData = (query: string) => {
-    const typeInfoList = typeData.current.filter((item) => {
-      return `${item.id}${item.explain}${item.name}`.includes(query);
-    });
-    setTypeList(typeInfoList);
-  };
+  }, [id]);
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
   const renderCategoryItems = () => {
     const CardList: Array<ReactNode> = [];
     categoryInfoMap.forEach((item, key) =>
@@ -73,12 +69,12 @@ export default function TypeListPage(props: Props): ReactNode {
         <div
           key={key}
           className={`px-4 py-2 zh transition-colors ${
-            key == cid
+            key == id
               ? "bg-teal-300 text-white cursor-default"
               : "text-teal-500 hover:bg-teal-100 cursor-pointer"
           }`}
           onClick={
-            key == cid
+            key == id
               ? undefined
               : () => {
                   router.replace(`/space/category/${key}`);
@@ -127,7 +123,7 @@ export default function TypeListPage(props: Props): ReactNode {
         <div
           className="flex flex-col items-center overflow-hidden h-24"
           style={{
-            backgroundImage: `url(${categoryInfoMap.get(cid!)!.image.src})`,
+            backgroundImage: `url(${categoryInfoMap.get(id!)!.image.src})`,
             backgroundSize: "auto 100%",
             backgroundRepeat: "no-repeat",
             backgroundPositionX: "50%",

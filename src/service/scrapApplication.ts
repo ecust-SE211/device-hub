@@ -25,7 +25,7 @@ export interface ScrapApplicationRequest {
   devices: DeviceList;
 }
 
-interface updateInfo extends Record<string, any> {
+interface UpdateInfo extends Record<string, any> {
   id: string;
   mid: string;
   lid?: string;
@@ -94,7 +94,7 @@ export function finishScrapApplication(
 }
 
 export function updateScrapApplication(
-  data: updateInfo
-): Promise<CommonResponse<updateInfo>> {
+  data: UpdateInfo
+): Promise<CommonResponse<UpdateInfo>> {
   return post("/scrap/application/update", data);
 }

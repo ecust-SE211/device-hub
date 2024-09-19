@@ -8,7 +8,7 @@ export default function IndexPage(): ReactNode {
   const router = useRouter();
   useEffect(() => {
     if (isLogin()) router.push("/space");
-  }, []);
+  }, [router]);
   return (
     <FlexCenter>
       <Card title={<Title size={1.5} className="w-full" useFavicon />}>

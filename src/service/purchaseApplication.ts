@@ -33,7 +33,7 @@ export interface PurchaseApplicationRequest {
   types: TypeRequestList;
 }
 
-interface updateInfo extends Record<string, any> {
+interface UpdateInfo extends Record<string, any> {
   id: string;
   mid: string;
   lid?: string;
@@ -104,8 +104,8 @@ export function finishPurchaseApplication(
 }
 
 export function updatePurchaseApplication(
-  data: updateInfo
-): Promise<CommonResponse<updateInfo>> {
+  data: UpdateInfo
+): Promise<CommonResponse<UpdateInfo>> {
   return post("/purchase/application/update", data);
 }
 
