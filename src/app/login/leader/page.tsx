@@ -30,7 +30,7 @@ export default function LeaderLogin(): ReactNode {
         localStorage.setItem("email", email);
         localStorage.setItem("token", token);
         localStorage.setItem("userType", "L");
-
+        console.log(token);
         router.push("/space");
         setSubmitting(false);
       })

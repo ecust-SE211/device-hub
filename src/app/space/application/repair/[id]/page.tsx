@@ -324,7 +324,7 @@ export default function RepairApplicationPage(props: Props): ReactNode {
                       : undefined,
                 },
                 {
-                  title: "Appending",
+                  title: "Repairing",
                   status:
                     rAInfo.status == ApplicationStatus.Canceled
                       ? "wait"

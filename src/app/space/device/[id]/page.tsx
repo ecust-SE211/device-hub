@@ -253,7 +253,7 @@ export default function DevicePage(props: Props): ReactNode {
                 title={<Title size={1} title="ScrapData" pointer />}
                 className="w-52"
                 onClick={go(
-                  `/space/application/Scrap/${deviceInfo.scrapApplicationId}`
+                  `/space/application/scrap/${deviceInfo.scrapApplicationId}`
                 )}
               >
                 <Meta

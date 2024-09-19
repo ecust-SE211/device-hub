@@ -27,6 +27,7 @@ const getUserType = (): UserType => {
   const userType = localStorage.getItem("userType") ?? undefined;
   if (userType === "M" || userType === "L") {
     user.userType = userType;
+    return userType;
   }
   if (userType) localStorage.removeItem("userType");
   return undefined;

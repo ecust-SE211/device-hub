@@ -322,7 +322,7 @@ export default function ScrapApplicationPage(props: Props): ReactNode {
                       : undefined,
                 },
                 {
-                  title: "Appending",
+                  title: "Scraping",
                   status:
                     sAInfo.status == ApplicationStatus.Canceled
                       ? "wait"

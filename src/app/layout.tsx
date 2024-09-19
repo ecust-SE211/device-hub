@@ -9,6 +9,7 @@ function RootLayout({ children }: React.PropsWithChildren) {
     <html lang="zh">
       <head>
         <title>DeviceHub</title>
+        <link rel="icon" type="image/x-icon" href="/favicon32.ico"></link>
       </head>
       <body className="w-full overflow-x-hidden">
         <div className="fixed w-full h-full overflow-hidden -z-10">
