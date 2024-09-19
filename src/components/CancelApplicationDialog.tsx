@@ -1,6 +1,6 @@
 "use client";
 import { Form, Input, message, Modal } from "antd";
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useState } from "react";
 import { LoadingPage } from "@/components";
 import FormItem from "antd/es/form/FormItem";
 import TextArea from "antd/es/input/TextArea";
@@ -43,7 +43,6 @@ export function CancelApplicationDialog(props: Props): ReactNode {
         messageApi.error(`${err}`);
       });
   };
-  useEffect(() => {}, [props]);
 
   return (
     <>

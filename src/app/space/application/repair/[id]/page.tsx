@@ -12,7 +12,7 @@ import {
 } from "antd";
 import type { TableProps } from "antd";
 import { useRouter } from "next/navigation";
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useCallback, useEffect, useState } from "react";
 import { CancelApplicationDialog, LoadingPage, Title } from "@/components";
 import { getUserType } from "@/utils";
 import {
@@ -30,7 +30,7 @@ import Meta from "antd/es/card/Meta";
 
 interface Props {
   params: {
-    id?: string;
+    id: string;
   };
 }
 export default function RepairApplicationPage(props: Props): ReactNode {
@@ -57,12 +57,11 @@ export default function RepairApplicationPage(props: Props): ReactNode {
   const { id } = props.params;
   const [form] = Form.useForm();
   const go = (href: string) => () => router.push(href);
-  const back = () => router.back();
   const isLeader = getUserType() === "L";
   const approve = () => {
     setIsLoading(true);
     void approveRepairApplication({
-      id: id!,
+      id,
     })
       .then((res) => {
         const { code, msg } = res;
@@ -86,7 +85,7 @@ export default function RepairApplicationPage(props: Props): ReactNode {
   const finish = () => {
     setIsLoading(true);
     void finishRepairApplication({
-      id: id!,
+      id,
     })
       .then((res) => {
         const { code, msg } = res;
@@ -158,12 +157,11 @@ export default function RepairApplicationPage(props: Props): ReactNode {
       </>
     );
   };
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     setIsLoading(true);
-    const fetchId = id!;
     return Promise.all([
       findRepairApplicationsByRid({
-        id: fetchId,
+        id,
       }).then((res) => {
         const { code, msg } = res;
         console.log(res);
@@ -174,7 +172,7 @@ export default function RepairApplicationPage(props: Props): ReactNode {
         }
         setRAInfo(res.data!);
       }),
-      findDevicesByRid({ id: fetchId }).then((res) => {
+      findDevicesByRid({ id }).then((res) => {
         const { code, msg } = res;
         console.log(res);
         if (code !== "200") {
@@ -192,11 +190,10 @@ export default function RepairApplicationPage(props: Props): ReactNode {
         setErrorMessage(`${err}`);
         setFetchError(true);
       });
-  };
+  }, [id]);
   useEffect(() => {
     fetchData();
-    // setIsLoading(false);
-  }, []);
+  }, [fetchData]);
   const columns: TableProps<DeviceInfo>["columns"] = [
     {
       title: "DeviceID",

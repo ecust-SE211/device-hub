@@ -2,7 +2,7 @@
 import { Button, Card, Modal, Table, Tag } from "antd";
 import type { TableProps } from "antd";
 import { useRouter } from "next/navigation";
-import { ReactNode, useEffect, useRef, useState } from "react";
+import { ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import { LoadingPage, Title } from "@/components";
 import { categoryInfoMap } from "@/utils";
 import {
@@ -13,12 +13,12 @@ import {
   TypeInfo,
 } from "@/service";
 import Search from "antd/es/input/Search";
-import { LeftOutlined, MenuOutlined, SelectOutlined } from "@ant-design/icons";
+import { LeftOutlined } from "@ant-design/icons";
 import { DeviceStatus } from "@/libs";
 
 interface Props {
   params: {
-    id?: string;
+    id: string;
   };
 }
 export default function TypePage(props: Props): ReactNode {
@@ -37,15 +37,17 @@ export default function TypePage(props: Props): ReactNode {
   const { id } = props.params;
 
   const go = (href: string) => () => router.push(href);
-  const back = () => router.back();
-  // const temp = parseInt(params.category);
-
-  const fetchData = async () => {
+  const queryData = (query: string) => {
+    const typeInfoList = deviceList.current.filter((item) => {
+      return `${item.id}${item.explain}${item.name}`.includes(query);
+    });
+    setDeviceData(typeInfoList);
+  };
+  const fetchData = useCallback(async () => {
     setIsLoading(true);
-    const fetchId = id!;
     return Promise.all([
       findDevicesByTid({
-        id: fetchId,
+        id,
       }).then((res) => {
         const { code, msg } = res;
         console.log(res);
@@ -60,7 +62,7 @@ export default function TypePage(props: Props): ReactNode {
         });
         setDeviceData(deviceList.current);
       }),
-      getTypeInfoByTid({ id: fetchId }).then((res) => {
+      getTypeInfoByTid({ id }).then((res) => {
         const { code, msg } = res;
         console.log(res);
         if (code !== "200") {
@@ -78,17 +80,10 @@ export default function TypePage(props: Props): ReactNode {
         setErrorMessage(`${err}`);
         setFetchError(true);
       });
-  };
-
-  const queryData = (query: string) => {
-    const typeInfoList = deviceList.current.filter((item) => {
-      return `${item.id}${item.explain}${item.name}`.includes(query);
-    });
-    setDeviceData(typeInfoList);
-  };
+  }, [id]);
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
   const columns: TableProps<DeviceInfo>["columns"] = [
     {
       title: "DeviceID",

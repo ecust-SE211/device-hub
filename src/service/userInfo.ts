@@ -1,18 +1,18 @@
 import { post, CommonResponse } from "@/libs";
 
-export interface infoEditRequest extends Record<string, string> {
+export interface InfoEditRequest extends Record<string, string> {
   tel: string;
   email: string;
 }
 
 export function leaderInfoEdit(
-  data: infoEditRequest
+  data: InfoEditRequest
 ): Promise<CommonResponse<undefined>> {
   return post("/leader/changeLeaderByToken", data);
 }
 
 export function managerInfoEdit(
-  data: infoEditRequest
+  data: InfoEditRequest
 ): Promise<CommonResponse<undefined>> {
   return post("/manager/changeManagerByToken", data);
 }

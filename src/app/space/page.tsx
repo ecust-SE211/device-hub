@@ -1,7 +1,7 @@
 "use client";
 import { Card, Descriptions, Modal, Statistic } from "antd";
 import { useRouter } from "next/navigation";
-import { ReactNode, useEffect, useRef, useState } from "react";
+import { ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import { LoadingPage, Title } from "@/components";
 import {
   ApplicationInfoList,
@@ -35,9 +35,8 @@ export default function HomePage(): ReactNode {
   const isLeader = userType === "L";
 
   const go = (href: string) => () => router.push(href);
-  const back = () => router.back();
-  const fetchData = async () => {
-    const fetchId = getId()!;
+  const fetchData = useCallback(async () => {
+    const id = getId()!;
     setIsLoading(true);
     let findApplicationFunc: (data: {
       id: string;
@@ -46,13 +45,13 @@ export default function HomePage(): ReactNode {
     else if (userType === "M") findApplicationFunc = findApplicationsByMid;
     else {
       clearUserInfo();
-      back();
+      router.back();
       return;
     }
 
     return Promise.all([
       findApplicationFunc({
-        id: fetchId,
+        id,
       }).then((res) => {
         const { code, msg } = res;
         console.log(res);
@@ -63,7 +62,7 @@ export default function HomePage(): ReactNode {
         }
         if (isLeader) {
           applicationCount.current = res.data!.filter(
-            (item) => item.lid === fetchId
+            (item) => item.lid === id
           ).length;
 
           let rest = res.data!.filter(
@@ -71,12 +70,12 @@ export default function HomePage(): ReactNode {
           );
           applicationWaitingCount.current = rest.length;
           applicationUrgentCount.current = rest.filter(
-            (item) => item.lid === fetchId
+            (item) => item.lid === id
           ).length;
           applicationFinishedCount.current =
             applicationCount.current - applicationUrgentCount.current;
         } else {
-          let rest = res.data!.filter((item) => item.mid === fetchId);
+          let rest = res.data!.filter((item) => item.mid === id);
           applicationCount.current = rest.length;
           rest = rest.filter((item) => item.status < 3);
           applicationWaitingCount.current = rest.length;
@@ -95,10 +94,10 @@ export default function HomePage(): ReactNode {
         setErrorMessage(`${err}`);
         setFetchError(true);
       });
-  };
+  }, [isLeader, router, userType]);
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   if (isLoading)
     return (

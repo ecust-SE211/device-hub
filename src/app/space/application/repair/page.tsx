@@ -1,15 +1,12 @@
 "use client";
 import { LoadingPage, Title } from "@/components";
-import { AppstoreAddOutlined, MinusOutlined } from "@ant-design/icons";
 import { Button, Card, Form, Input, message, Modal, Radio, Select } from "antd";
 import FormItem from "antd/es/form/FormItem";
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useCallback, useEffect, useState } from "react";
 import {
   appendRepairApplication,
   getDeviceIds,
-  getTypes,
   RepairApplicationRequest,
-  TypeListResponse,
 } from "@/service";
 import { useRouter } from "next/navigation";
 import { getId, getUserType } from "@/utils";
@@ -24,7 +21,6 @@ export default function NewRepairApplication(): ReactNode {
   const [deviceIds, setDeviceIds] = useState<Array<string>>([]);
   const [form] = Form.useForm();
   const go = (href: string) => () => router.push(href);
-  const back = () => router.back();
   const submit = (values: {
     mid: string;
     brief: string;
@@ -62,7 +58,7 @@ export default function NewRepairApplication(): ReactNode {
         setSubmitting(false);
       });
   };
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     return getDeviceIds()
       .then((res) => {
         const { code, msg } = res;
@@ -79,11 +75,11 @@ export default function NewRepairApplication(): ReactNode {
         setErrorMessage(`${err}`);
         setFetchError(true);
       });
-  };
-  useEffect(() => {
-    if (getUserType() !== "M") back();
-    void fetchData();
   }, []);
+  useEffect(() => {
+    if (getUserType() !== "M") router.back();
+    void fetchData();
+  }, [router, fetchData]);
   if (isLoading)
     return (
       <>

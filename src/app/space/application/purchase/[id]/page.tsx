@@ -3,7 +3,6 @@ import {
   Button,
   Card,
   Descriptions,
-  Form,
   message,
   Modal,
   Progress,
@@ -12,7 +11,7 @@ import {
 } from "antd";
 import type { TableProps } from "antd";
 import { useRouter } from "next/navigation";
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useCallback, useEffect, useState } from "react";
 import {
   LoadingPage,
   Title,
@@ -21,9 +20,7 @@ import {
 } from "@/components";
 import { getUserType } from "@/utils";
 import {
-  appendDevices,
   approvePurchaseApplication,
-  DeviceRequest,
   findPurchaseApplicationsByPid,
   findPurchaseRecordListByPid,
   finishPurchaseApplication,
@@ -37,7 +34,7 @@ import Meta from "antd/es/card/Meta";
 
 interface Props {
   params: {
-    id?: string;
+    id: string;
   };
 }
 export default function PurchaseApplicationPage(props: Props): ReactNode {
@@ -68,7 +65,7 @@ export default function PurchaseApplicationPage(props: Props): ReactNode {
   const approve = () => {
     setIsLoading(true);
     void approvePurchaseApplication({
-      id: id!,
+      id,
     })
       .then((res) => {
         const { code, msg } = res;
@@ -92,7 +89,7 @@ export default function PurchaseApplicationPage(props: Props): ReactNode {
   const finish = () => {
     setIsLoading(true);
     void finishPurchaseApplication({
-      id: id!,
+      id,
     })
       .then((res) => {
         const { code, msg } = res;
@@ -181,12 +178,11 @@ export default function PurchaseApplicationPage(props: Props): ReactNode {
       </>
     );
   };
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     setIsLoading(true);
-    const fetchId = id!;
     return Promise.all([
       findPurchaseApplicationsByPid({
-        id: fetchId,
+        id,
       }).then((res) => {
         const { code, msg } = res;
         console.log(res);
@@ -197,7 +193,7 @@ export default function PurchaseApplicationPage(props: Props): ReactNode {
         }
         setPAInfo(res.data!);
       }),
-      findPurchaseRecordListByPid({ id: fetchId }).then((res) => {
+      findPurchaseRecordListByPid({ id }).then((res) => {
         const { code, msg } = res;
         console.log(res);
         if (code !== "200") {
@@ -215,10 +211,10 @@ export default function PurchaseApplicationPage(props: Props): ReactNode {
         setErrorMessage(`${err}`);
         setFetchError(true);
       });
-  };
+  }, [id]);
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
   const columns: TableProps<PurchaseRecord>["columns"] = [
     {
       key: "finish",

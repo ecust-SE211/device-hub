@@ -12,7 +12,7 @@ import {
 } from "antd";
 import type { TableProps } from "antd";
 import { useRouter } from "next/navigation";
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useCallback, useEffect, useState } from "react";
 import { CancelApplicationDialog, LoadingPage, Title } from "@/components";
 import { getUserType } from "@/utils";
 import {
@@ -30,7 +30,7 @@ import Meta from "antd/es/card/Meta";
 
 interface Props {
   params: {
-    id?: string;
+    id: string;
   };
 }
 export default function ScrapApplicationPage(props: Props): ReactNode {
@@ -55,12 +55,11 @@ export default function ScrapApplicationPage(props: Props): ReactNode {
   const { id } = props.params;
   const [form] = Form.useForm();
   const go = (href: string) => () => router.push(href);
-  const back = () => router.back();
   const isLeader = getUserType() === "L";
   const approve = () => {
     setIsLoading(true);
     void approveScrapApplication({
-      id: id!,
+      id,
     })
       .then((res) => {
         const { code, msg } = res;
@@ -84,7 +83,7 @@ export default function ScrapApplicationPage(props: Props): ReactNode {
   const finish = () => {
     setIsLoading(true);
     void finishScrapApplication({
-      id: id!,
+      id,
     })
       .then((res) => {
         const { code, msg } = res;
@@ -156,12 +155,11 @@ export default function ScrapApplicationPage(props: Props): ReactNode {
       </>
     );
   };
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     setIsLoading(true);
-    const fetchId = id!;
     return Promise.all([
       findScrapApplicationsBySid({
-        id: fetchId,
+        id,
       }).then((res) => {
         const { code, msg } = res;
         console.log(res);
@@ -172,7 +170,7 @@ export default function ScrapApplicationPage(props: Props): ReactNode {
         }
         setSAInfo(res.data!);
       }),
-      findDevicesBySid({ id: fetchId }).then((res) => {
+      findDevicesBySid({ id }).then((res) => {
         const { code, msg } = res;
         console.log(res);
         if (code !== "200") {
@@ -190,11 +188,10 @@ export default function ScrapApplicationPage(props: Props): ReactNode {
         setErrorMessage(`${err}`);
         setFetchError(true);
       });
-  };
+  }, [id]);
   useEffect(() => {
     fetchData();
-    // setIsLoading(false);
-  }, []);
+  }, [fetchData]);
   const columns: TableProps<DeviceInfo>["columns"] = [
     {
       title: "DeviceID",

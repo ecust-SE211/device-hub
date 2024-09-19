@@ -47,7 +47,7 @@ export function AppendDeviceDialog(props: Props): ReactNode {
   useEffect(() => {
     form.setFieldValue("tid", props.tid);
     form.setFieldValue("num", props.limit);
-  }, [props]);
+  }, [form, props]);
 
   return (
     <>

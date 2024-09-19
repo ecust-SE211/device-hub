@@ -5,7 +5,14 @@ import { useRouter } from "next/navigation";
 import React, { ReactNode, useState } from "react";
 import { EditOutlined, LogoutOutlined, UserOutlined } from "@ant-design/icons";
 import FormItem from "antd/es/form/FormItem";
-import { getEmail, getId, getName, getTel, getUserType } from "@/utils";
+import {
+  clearUserInfo,
+  getEmail,
+  getId,
+  getName,
+  getTel,
+  getUserType,
+} from "@/utils";
 import { leaderInfoEdit, managerInfoEdit } from "@/service";
 export default function UserInfoCard(): ReactNode {
   const router = useRouter();
@@ -20,6 +27,7 @@ export default function UserInfoCard(): ReactNode {
     localStorage.removeItem("email");
     localStorage.removeItem("token");
     localStorage.removeItem("userType");
+    clearUserInfo();
     router.push("/");
   };
   const submit = (values: any) => {

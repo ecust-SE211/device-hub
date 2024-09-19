@@ -2,7 +2,7 @@
 import { LoadingPage, Title } from "@/components";
 import { Button, Card, Form, Input, message, Modal, Radio, Select } from "antd";
 import FormItem from "antd/es/form/FormItem";
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useState } from "react";
 import { appendType, TypeInfo } from "@/service";
 import { useRouter } from "next/navigation";
 import { categoryInfoList } from "@/utils";
@@ -35,7 +35,6 @@ export default function NewTypePage(): ReactNode {
         setSubmitting(false);
       });
   };
-  useEffect(() => {}, []);
   return (
     <div className="flex flex-col items-center">
       {submitting && <LoadingPage cover />}
