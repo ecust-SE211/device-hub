@@ -1,5 +1,5 @@
 <div align="center">
-  <a href="https://github.com/RSSNext/Follow">
+  <a href="https://github.com/ecust-SE211/device-hub">
     <img width="100" src="https://raw.githubusercontent.com/ecust-SE211/device-hub/refs/heads/main/public/favicon.png">
   </a>
 
