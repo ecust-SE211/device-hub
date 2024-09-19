@@ -49,7 +49,6 @@ export default function DevicePage(props: Props): ReactNode {
         id,
       }).then((res) => {
         const { code, msg } = res;
-        console.log(res);
         if (code !== "200") {
           setErrorMessage(`Code :${code}\n${msg}`);
           setFetchError(true);
@@ -59,7 +58,6 @@ export default function DevicePage(props: Props): ReactNode {
       }),
       findRepairApplicationsByDid({ id }).then((res) => {
         const { code, msg } = res;
-        console.log(res);
         if (code !== "200") {
           setErrorMessage(`Code :${code}\n${msg}`);
           setFetchError(true);

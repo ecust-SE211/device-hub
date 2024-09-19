@@ -22,7 +22,7 @@ import { getUserType } from "@/utils";
 import {
   approvePurchaseApplication,
   findPurchaseApplicationsByPid,
-  findPurchaseRecordListByPid,
+  findTypesByPid,
   finishPurchaseApplication,
   PurchaseApplicationInfo,
   PurchaseRecord,
@@ -69,7 +69,6 @@ export default function PurchaseApplicationPage(props: Props): ReactNode {
     })
       .then((res) => {
         const { code, msg } = res;
-        console.log(res);
         if (code !== "200") {
           setErrorMessage(`Code :${code}\n${msg}`);
           setFetchError(true);
@@ -93,7 +92,6 @@ export default function PurchaseApplicationPage(props: Props): ReactNode {
     })
       .then((res) => {
         const { code, msg } = res;
-        console.log(res);
         if (code !== "200") {
           setErrorMessage(`Code :${code}\n${msg}`);
           setFetchError(true);
@@ -185,7 +183,6 @@ export default function PurchaseApplicationPage(props: Props): ReactNode {
         id,
       }).then((res) => {
         const { code, msg } = res;
-        console.log(res);
         if (code !== "200") {
           setErrorMessage(`Code :${code}\n${msg}`);
           setFetchError(true);
@@ -193,9 +190,8 @@ export default function PurchaseApplicationPage(props: Props): ReactNode {
         }
         setPAInfo(res.data!);
       }),
-      findPurchaseRecordListByPid({ id }).then((res) => {
+      findTypesByPid({ id }).then((res) => {
         const { code, msg } = res;
-        console.log(res);
         if (code !== "200") {
           setErrorMessage(`Code :${code}\n${msg}`);
           setFetchError(true);

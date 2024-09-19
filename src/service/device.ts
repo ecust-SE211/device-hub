@@ -29,11 +29,6 @@ export interface DeviceRequest extends Record<string, any> {
 
 export type DeviceInfoList = Array<DeviceInfo>;
 export type DeviceInfoPage = PageResponse<DeviceInfo>;
-// export async function findDevicesByCid(
-//   data: idRequest
-// ): Promise<commonResponse<DeviceInfoList>> {
-//   return post("/device/findDevicesByCid", data);
-// }
 
 export async function findDeviceByDid(
   data: IdRequest

@@ -17,7 +17,6 @@ export default function ManagerLogin(): ReactNode {
     managerLogin(values)
       .then((res) => {
         const { code, msg } = res;
-        console.log(res);
         if (code !== "200") {
           messageApi.error(`Code :${code}\n${msg}`);
           setSubmitting(false);

@@ -18,11 +18,6 @@ export default function NavBar(): ReactNode {
     pathSplit.length > 2 && pathSplit[2] === "application";
   const handleScroll = throttle(() => {
     if (window.scrollY > 40 != scrolled) setScrolled(!scrolled);
-    console.log(
-      document.documentElement.offsetHeight -
-        document.documentElement.clientHeight,
-      window.scrollY
-    );
   }, 200);
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);

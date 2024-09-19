@@ -30,7 +30,6 @@ export default function NewPurchaseApplication(): ReactNode {
     appendPurchaseApplication(values)
       .then((res) => {
         const { code, msg } = res;
-        console.log(res);
         if (code !== "200") {
           messageApi.error(`Code :${code}\n${msg}`);
           setSubmitting(false);
@@ -60,7 +59,6 @@ export default function NewPurchaseApplication(): ReactNode {
     return getTypes()
       .then((res) => {
         const { code, msg } = res;
-        console.log(res);
         if (code !== "200") {
           setErrorMessage(`Code :${code}\n${msg}`);
           setFetchError(true);

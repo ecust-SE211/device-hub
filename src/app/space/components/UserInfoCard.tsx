@@ -42,7 +42,6 @@ export default function UserInfoCard(): ReactNode {
     infoEdit({ tel, email })
       .then((res) => {
         const { code, msg } = res;
-        console.log(res);
         if (code !== "200") {
           messageApi.error(`Code :${code}\n${msg}`);
         }

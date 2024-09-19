@@ -17,7 +17,6 @@ export default function LeaderLogin(): ReactNode {
     leaderLogin(values)
       .then((res) => {
         const { code, msg } = res;
-        console.log(res);
         if (code !== "200") {
           messageApi.error(`Code :${code}\n${msg}`);
           setSubmitting(false);
@@ -30,7 +29,6 @@ export default function LeaderLogin(): ReactNode {
         localStorage.setItem("email", email);
         localStorage.setItem("token", token);
         localStorage.setItem("userType", "L");
-        console.log(token);
         router.push("/space");
         setSubmitting(false);
       })

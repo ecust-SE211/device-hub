@@ -63,7 +63,6 @@ export default function ScrapApplicationPage(props: Props): ReactNode {
     })
       .then((res) => {
         const { code, msg } = res;
-        console.log(res);
         if (code !== "200") {
           setErrorMessage(`Code :${code}\n${msg}`);
           setFetchError(true);
@@ -87,7 +86,6 @@ export default function ScrapApplicationPage(props: Props): ReactNode {
     })
       .then((res) => {
         const { code, msg } = res;
-        console.log(res);
         if (code !== "200") {
           setErrorMessage(`Code :${code}\n${msg}`);
           setFetchError(true);
@@ -162,7 +160,6 @@ export default function ScrapApplicationPage(props: Props): ReactNode {
         id,
       }).then((res) => {
         const { code, msg } = res;
-        console.log(res);
         if (code !== "200") {
           setErrorMessage(`Code :${code}\n${msg}`);
           setFetchError(true);
@@ -172,7 +169,6 @@ export default function ScrapApplicationPage(props: Props): ReactNode {
       }),
       findDevicesBySid({ id }).then((res) => {
         const { code, msg } = res;
-        console.log(res);
         if (code !== "200") {
           setErrorMessage(`Code :${code}\n${msg}`);
           setFetchError(true);

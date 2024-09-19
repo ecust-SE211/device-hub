@@ -18,14 +18,12 @@ export function CancelApplicationDialog(props: Props): ReactNode {
   const [messageApi, contextHolder] = message.useMessage();
   const [form] = Form.useForm();
   const submit = (value: RejectRequest) => {
-    console.log(value);
     if (isLoading) return;
     setIsLoading(true);
     props
       .cancelFunc(value)
       .then((res) => {
         const { code, msg } = res;
-        console.log(res);
         if (code !== "200") {
           messageApi.error(`Code :${code}\n${msg}`);
           return;

@@ -13,13 +13,11 @@ export default function NewTypePage(): ReactNode {
   const [submitting, setSubmitting] = useState(false);
   const [form] = Form.useForm();
   const submit = async (values: TypeInfo) => {
-    console.log(values);
     if (submitting) return;
     setSubmitting(true);
     appendType(values)
       .then((res) => {
         const { code, msg } = res;
-        console.log(res);
         if (code !== "200") {
           messageApi.error(`Code :${code}\n${msg}`);
           setSubmitting(false);

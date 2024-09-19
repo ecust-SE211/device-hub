@@ -42,7 +42,6 @@ export default function NewRepairApplication(): ReactNode {
     appendRepairApplication(request)
       .then((res) => {
         const { code, msg } = res;
-        console.log(res);
         if (code !== "200") {
           messageApi.error(`Code :${code}\n${msg}`);
           setSubmitting(false);
@@ -62,7 +61,6 @@ export default function NewRepairApplication(): ReactNode {
     return getDeviceIds()
       .then((res) => {
         const { code, msg } = res;
-        console.log(res);
         if (code !== "200") {
           setErrorMessage(`Code :${code}\n${msg}`);
           setFetchError(true);

@@ -41,7 +41,6 @@ const categoryInfoList: GetCategoryInfoList = new Array();
 const initCategoryInfo = async () => {
   const res = await get<GetCategoryInfoList>("/category/getCategoryList");
   const { code, msg } = res;
-  console.log(res);
   if (code !== "200") {
     throw new Error(`Code :${code}\n${msg}`);
   }

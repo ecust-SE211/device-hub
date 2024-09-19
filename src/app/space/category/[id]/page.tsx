@@ -45,7 +45,6 @@ export default function TypeListPage(props: Props): ReactNode {
     })
       .then((res) => {
         const { code, msg } = res;
-        console.log(res);
         if (code !== "200") {
           setErrorMessage(`Code :${code}\n${msg}`);
           setFetchError(true);
